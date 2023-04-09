@@ -177,6 +177,11 @@ public class Bus_Ciegas {
 
     //Busqueda bidireccional por anchura
 
+    /*
+        * Realiza una búsqueda bidireccional por anchura desde un nodo inicial hasta un nodo final,
+        * @param nodo_inicial El nodo desde donde se inicia la búsqueda.
+        * @param nodo_final El nodo que se desea encontrar durante la búsqueda.
+     */
     public void busquedaBidireccionalAnchura(String nodo_inicial, String nodo_final){
         System.out.println("----Busqueda Bidireccional por Anchura ---- Nodo Inicial: " + nodo_inicial + " Nodo Final: " + nodo_final);
         ArrayList<Nodo> extrae_inicio = new ArrayList<>();
@@ -269,12 +274,149 @@ public class Bus_Ciegas {
 
     }
 
+    //Busqueda bidireccional por profundidad
+
+    /*
+     * Realiza una búsqueda bidireccional por profundidad desde un nodo inicial hasta un nodo final,
+     * @param nodo_inicial El nodo desde donde se inicia la búsqueda.
+     * @param nodo_final El nodo que se desea encontrar durante la búsqueda.
+     */
+    public void busquedaBidireccionalProfundidad(String nodo_inicial, String nodo_final) {
+        ArrayList<Nodo> extrae_inicio = new ArrayList<>();
+        ArrayList<Nodo> extrae_final = new ArrayList<>();
+
+        ArrayList<ArrayList<Nodo>> total_colaA = new ArrayList<>();
+        ArrayList<ArrayList<Nodo>> total_colaB = new ArrayList<>();
+        ArrayList<Nodo> cola = new ArrayList<>();
+        ArrayList<Nodo> cola2 = new ArrayList<>();
+        Nodo nodo_inicial_obj = graph.findNode(nodo_inicial);
+        Nodo nodo_final_obj = graph.findNode(nodo_final);
+        cola.add(nodo_inicial_obj);
+        cola2.add(nodo_final_obj);
+        while (!cola.isEmpty() && !cola2.isEmpty()){
+            //Pasar un clon de la cola a la lista de colas
+            total_colaA.add((ArrayList<Nodo>) cola.clone());
+            //Primera cola
+            Nodo nodo_actual = cola.get(0);
+            cola.remove(0);
+
+            extrae_inicio.add(nodo_actual);
+
+            if (nodo_actual.getName().equals(nodo_final_obj.getName())){
+                break;
+            }
+            ArrayList<Nodo> hijos_ord = new ArrayList<>();
+            for (Edge way : nodo_actual.getWays()) {
+                //Verificar si ya fueron añadidos a la cola o fueron extraidos
+                if (!cola.contains(way.getDestination())&& !extrae_inicio.contains(way.getDestination())){
+                    hijos_ord.add(way.getDestination());
+                }
+            }
+            Collections.sort(hijos_ord);
+            cola.addAll(0,hijos_ord);
 
 
+            //Segunda cola
+            total_colaB.add((ArrayList<Nodo>) cola2.clone());
+            Nodo nodo_actual2 = cola2.get(0);
+            cola2.remove(0);
+
+            extrae_final.add(nodo_actual2);
+
+            if (nodo_actual2.getName().equals(nodo_inicial_obj.getName())){
+                break;
+            }
+            ArrayList<Nodo> hijos_ord2 = new ArrayList<>();
+            for (Edge way : nodo_actual2.getWays()) {
+                //Verificar si ya fueron añadidos a la cola
+                if (!cola2.contains(way.getDestination()) && !extrae_final.contains(way.getDestination())){
+                    hijos_ord2.add(way.getDestination());
+                }
+            }
+            Collections.sort(hijos_ord2);
+            cola2.addAll(0,hijos_ord2);
+            //Pasar un clon de la cola a la lista de colas
 
 
+            //Verificar si hay un nodo en comun
+            for (Nodo nodo : cola) {
+                if (cola2.contains(nodo)){
+                    //Enviar ultima cola
+                    total_colaA.add((ArrayList<Nodo>) cola.clone());
+                    total_colaB.add((ArrayList<Nodo>) cola2.clone());
+
+                    //Imprimir las colas
+                    System.out.println("Cola desde Nodo Inicial: ");
+
+                    for (ArrayList<Nodo> lista : total_colaA) {
+                        System.out.println(lista);
+                    }
+                    System.out.println("Extrae Inicio: " + extrae_inicio);
+                    System.out.println("----------------------------------------------");
+                    System.out.println("Cola desde Nodo Final: " );
+                    for (ArrayList<Nodo> lista : total_colaB) {
+                        System.out.println(lista);
+                    }
+                    System.out.println("Extrae Final: " + extrae_final);
+                    System.out.println("----------------------------------------------");
+                    //Nodo en comun
+                    System.out.println("Nodo en comun: " + nodo.getName());
+                    //Vaciar las colas
+                    cola.clear();
+                    cola2.clear();
+                    break;
+                }
+            }
+
+        }
 
 
+    }
+
+    //Busqueda coste uniforme
+    /*
+        * Realiza una búsqueda por coste uniforme desde un nodo inicial hasta un nodo final,
+        * @param nodo_inicial El nodo desde donde se inicia la búsqueda.
+        * @param nodo_final El nodo que se desea encontrar durante la búsqueda.
+     */
+
+    public void busquedaCosteUniforme(String nodo_inicial, String nodo_final) {
+        ArrayList<Nodo> extrae_inicio = new ArrayList<>();
+        ArrayList<Nodo> extrae_final = new ArrayList<>();
+
+        ArrayList<ArrayList<Nodo>> total_colaA = new ArrayList<>();
+        ArrayList<ArrayList<Nodo>> total_colaB = new ArrayList<>();
+        ArrayList<Nodo> cola = new ArrayList<>();
+        ArrayList<Nodo> cola2 = new ArrayList<>();
+        Nodo nodo_inicial_obj = graph.findNode(nodo_inicial);
+        Nodo nodo_final_obj = graph.findNode(nodo_final);
+        cola.add(nodo_inicial_obj);
+        cola2.add(nodo_final_obj);
+        while (!cola.isEmpty() && !cola2.isEmpty()) {
+            //Pasar un clon de la cola a la lista de colas
+            total_colaA.add((ArrayList<Nodo>) cola.clone());
+            //Primera cola
+            Nodo nodo_actual = cola.get(0);
+            cola.remove(0);
+
+            extrae_inicio.add(nodo_actual);
+
+            if (nodo_actual.getName().equals(nodo_final_obj.getName())) {
+                break;
+            }
+            ArrayList<Nodo> hijos_ord = new ArrayList<>();
+            for (Edge way : nodo_actual.getWays()) {
+                //Verificar si ya fueron añadidos a la cola o fueron extraidos
+                if (!cola.contains(way.getDestination()) && !extrae_inicio.contains(way.getDestination())) {
+                    hijos_ord.add(way.getDestination());
+                }
+            }
+            Collections.sort(hijos_ord);
+            cola.addAll(hijos_ord);
+
+        }
+
+    }
 
 
 
