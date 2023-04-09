@@ -15,9 +15,9 @@ public class Main {
         Grafo graph = new Grafo();
 
         //<ArrayList<String>> data = dt.getData("src/data/graph_Data.csv");
-        ArrayList<ArrayList<String>> data = dt.getData("src/data/Grafos/graph_Data_prof.csv");
+        ArrayList<ArrayList<String>> data = dt.getData("src/data/Grafos/HGrafo2.csv");
         //Remove header
-        data.remove(0);
+        //data.remove(0);
         //Add nodes
 
         for (ArrayList<String> row : data) {
@@ -57,11 +57,16 @@ public class Main {
         } */
 
         //Busqueda a ciegas profundidad iterativa
-        Bus_Ciegas busqueda = new Bus_Ciegas(graph);
+       /* Bus_Ciegas busqueda = new Bus_Ciegas(graph);
         ArrayList<Nodo> nodos_visitados = busqueda.busquedaProfundidadIterativa("A","L");
         System.out.println("Nodos visitados: ");
         for (Nodo nodo : nodos_visitados) {
             System.out.print(nodo.getName()+" ");
-        }
+        } */
+
+        //Busqueda bidireccional
+
+        Bus_Ciegas busqueda = new Bus_Ciegas(graph);
+        busqueda.busquedaBidireccionalAnchura("A","I");
     }
 }
