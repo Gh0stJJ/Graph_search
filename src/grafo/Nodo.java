@@ -59,4 +59,9 @@ public class Nodo implements Comparable<Nodo> {
     public int compareTo(Nodo o) {
         return this.name.compareTo(o.getName());
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s", name);
+    }
 }

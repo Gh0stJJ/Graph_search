@@ -106,6 +106,8 @@ public class Bus_Ciegas {
         int profundidad_actual = 0;
 
         while (!cola.isEmpty()) {
+            //Imprimir la cola
+            System.out.println("Cola: " + cola);
             Pair<Nodo, Integer> nodo_actual_par = cola.remove(0);
             Nodo nodo_actual = nodo_actual_par.getKey();
             int nivel_actual = nodo_actual_par.getValue();
@@ -132,6 +134,7 @@ public class Bus_Ciegas {
                 }
 
             }
+
         }
 
         return new Pair<>(nodos_visitados, false);
@@ -149,9 +152,12 @@ public class Bus_Ciegas {
         //TODO
         int profundidad_actual = 0;
         ArrayList<Nodo> nodos_visitados = new ArrayList<>();
+        System.out.println("----Profundidad Iterativa ---- Nodo Inicial: " + nodo_inicial + " Nodo Final: " + nodo_final);
        while (true) {
+           System.out.println("Profundidad actual: " + profundidad_actual);
             Pair<ArrayList<Nodo>, Boolean> resultado = busquedaProfundidadLimitada(nodo_inicial, nodo_final, profundidad_actual);
             nodos_visitados.addAll(resultado.getKey());
+            System.out.println("Extrae  "+ resultado.getKey()+ "");
            if (resultado.getValue()) {
                return nodos_visitados;
            }

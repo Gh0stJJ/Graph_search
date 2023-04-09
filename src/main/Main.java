@@ -15,7 +15,7 @@ public class Main {
         Grafo graph = new Grafo();
 
         //<ArrayList<String>> data = dt.getData("src/data/graph_Data.csv");
-        ArrayList<ArrayList<String>> data = dt.getData("src/data/graph_Data_prof.csv");
+        ArrayList<ArrayList<String>> data = dt.getData("src/data/Grafos/graph_Data_prof.csv");
         //Remove header
         data.remove(0);
         //Add nodes
@@ -61,7 +61,7 @@ public class Main {
         ArrayList<Nodo> nodos_visitados = busqueda.busquedaProfundidadIterativa("A","L");
         System.out.println("Nodos visitados: ");
         for (Nodo nodo : nodos_visitados) {
-            System.out.println(nodo.getName());
+            System.out.print(nodo.getName()+" ");
         }
     }
 }

@@ -17,5 +17,10 @@ public class Pair<T,U> {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return String.format("(%s)", key);
+    }
+
 
 }
