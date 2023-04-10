@@ -381,40 +381,42 @@ public class Bus_Ciegas {
      */
 
     public void busquedaCosteUniforme(String nodo_inicial, String nodo_final) {
-        ArrayList<Nodo> extrae_inicio = new ArrayList<>();
-        ArrayList<Nodo> extrae_final = new ArrayList<>();
-
-        ArrayList<ArrayList<Nodo>> total_colaA = new ArrayList<>();
-        ArrayList<ArrayList<Nodo>> total_colaB = new ArrayList<>();
-        ArrayList<Nodo> cola = new ArrayList<>();
-        ArrayList<Nodo> cola2 = new ArrayList<>();
+        ArrayList<Pair<Nodo,Double>> extrae = new ArrayList<>();
+        //Cola
+        ArrayList<Pair<Nodo,Double>> cola = new ArrayList<>();
         Nodo nodo_inicial_obj = graph.findNode(nodo_inicial);
         Nodo nodo_final_obj = graph.findNode(nodo_final);
-        cola.add(nodo_inicial_obj);
-        cola2.add(nodo_final_obj);
-        while (!cola.isEmpty() && !cola2.isEmpty()) {
-            //Pasar un clon de la cola a la lista de colas
-            total_colaA.add((ArrayList<Nodo>) cola.clone());
-            //Primera cola
-            Nodo nodo_actual = cola.get(0);
-            cola.remove(0);
-
-            extrae_inicio.add(nodo_actual);
-
-            if (nodo_actual.getName().equals(nodo_final_obj.getName())) {
-                break;
+        cola.add(new Pair<>(nodo_inicial_obj,0.0));
+        Map<Nodo,Double> costo_acumulado = new HashMap<>();
+        costo_acumulado.put(nodo_inicial_obj,0.0);
+        //System.out.println("[" + cola+ ":"+ cola.);
+        while (!cola.isEmpty()) {
+            System.out.println(cola);
+            // Se extrae el nodo con menor costo acumulado de la cola.
+            Pair<Nodo, Double> nodoActual = cola.stream().min(Comparator.comparing(Pair::getValue)).get();
+            cola.remove(nodoActual);
+            Nodo nodo = nodoActual.getKey();
+            // Si llegamos al nodo final, se termina la búsqueda.
+            if (nodo.equals(nodo_final_obj)) {
+                // Hacer algo con la solución encontrada
+                return;
             }
-            ArrayList<Nodo> hijos_ord = new ArrayList<>();
-            for (Edge way : nodo_actual.getWays()) {
-                //Verificar si ya fueron añadidos a la cola o fueron extraidos
-                if (!cola.contains(way.getDestination()) && !extrae_inicio.contains(way.getDestination())) {
-                    hijos_ord.add(way.getDestination());
+            // Para cada vecino del nodo actual, se actualiza el costo acumulado y se añade a la cola.
+            for (Edge arista : nodo.getWays()) {
+                Nodo vecino = arista.getDestination();
+                double costo = arista.getDistance();
+                double costoAcumuladoNuevo = costo_acumulado.get(nodo) + costo;
+                // Si el vecino no ha sido visitado o si se encontró un camino más corto, se actualiza su costo acumulado y se añade a la cola.
+                if (!costo_acumulado.containsKey(vecino) || costoAcumuladoNuevo < costo_acumulado.get(vecino)) {
+                    costo_acumulado.put(vecino, costoAcumuladoNuevo);
+                    cola.add(new Pair<>(vecino, costoAcumuladoNuevo));
                 }
             }
-            Collections.sort(hijos_ord);
-            cola.addAll(hijos_ord);
-
         }
+
+
+
+
 
     }
 
