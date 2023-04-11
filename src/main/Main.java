@@ -66,7 +66,13 @@ public class Main {
 
         //Busqueda bidireccional
 
+        //Bus_Ciegas busqueda = new Bus_Ciegas(graph);
+        //busqueda.busquedaBidireccionalAnchura("1","16");
+
+        //Busqueda coste uniforme
+
         Bus_Ciegas busqueda = new Bus_Ciegas(graph);
-        busqueda.busquedaBidireccionalAnchura("A","I");
+        busqueda.busquedaCosteUniforme("A","F");
+
     }
 }

@@ -204,7 +204,7 @@ public class Bus_Ciegas {
 
             extrae_inicio.add(nodo_actual);
 
-            if (nodo_actual.getName().equals(nodo_final_obj.getName())){
+            if (nodo_actual.getName().equals(nodo_final_obj.getName())){ //Si el nodo actual es el nodo final
                 break;
             }
             ArrayList<Nodo> hijos_ord = new ArrayList<>();
@@ -389,16 +389,27 @@ public class Bus_Ciegas {
         cola.add(new Pair<>(nodo_inicial_obj,0.0));
         Map<Nodo,Double> costo_acumulado = new HashMap<>();
         costo_acumulado.put(nodo_inicial_obj,0.0);
-        //System.out.println("[" + cola+ ":"+ cola.);
         while (!cola.isEmpty()) {
-            System.out.println(cola);
+            //Ordenamos la cola
+            Collections.sort(cola, Comparator.comparing(Pair::getValue));
+            //Imprimir la cola
+            for (Pair<Nodo, Double> nodo : cola) {
+                System.out.print("["+nodo.getKey().getName() + " : " + nodo.getValue()+"]");
+            }
+            System.out.println();
             // Se extrae el nodo con menor costo acumulado de la cola.
-            Pair<Nodo, Double> nodoActual = cola.stream().min(Comparator.comparing(Pair::getValue)).get();
+            //Pair<Nodo, Double> nodoActual = cola.stream().min(Comparator.comparing(Pair::getValue)).get();
+            Pair<Nodo, Double> nodoActual = cola.get(0);
             cola.remove(nodoActual);
+            extrae.add(nodoActual);
             Nodo nodo = nodoActual.getKey();
             // Si llegamos al nodo final, se termina la búsqueda.
             if (nodo.equals(nodo_final_obj)) {
                 // Hacer algo con la solución encontrada
+                System.out.println("Solucion encontrada");
+                for (Pair<Nodo, Double> nodo1 : extrae) {
+                    System.out.print("["+nodo1.getKey().getName() + " : " + nodo1.getValue()+"] ");
+                }
                 return;
             }
             // Para cada vecino del nodo actual, se actualiza el costo acumulado y se añade a la cola.
@@ -413,14 +424,9 @@ public class Bus_Ciegas {
                 }
             }
         }
-
-
-
-
-
+        // Si la cola se vacía sin encontrar el nodo final, no existe solución.
+        System.out.println("No existe solución");
     }
-
-
 
 
 }
