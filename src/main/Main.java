@@ -142,6 +142,16 @@ public class Main {
                     graph.busquedaHillClimbing(nodo_origen7,nodo_destino7);
                     break;
 
+                case "8":
+                    System.out.println("Busqueda Primero el mejor");
+                    System.out.println("Ingrese el nodo origen");
+                    String nodo_origen8 = sc.next();
+                    System.out.println("Ingrese el nodo destino");
+                    String nodo_destino8 = sc.next();
+
+                    graph.busquedaPrimeroElMejor(nodo_origen8,nodo_destino8);
+                    break;
+
                 case ".":
                     System.out.println("Salir");
                     break;

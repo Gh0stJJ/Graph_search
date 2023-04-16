@@ -509,6 +509,11 @@ public class Grafo {
     //Busquedas heurísticas
 
     //Busqueda hill climbing
+    /*
+     * Realiza una búsqueda hill climbing desde un nodo inicial hasta un nodo final,
+     * @param nodo_inicial El nodo desde donde se inicia la búsqueda.
+     * @param nodo_final El nodo que se desea encontrar durante la búsqueda.
+     */
 
     public void busquedaHillClimbing(String nodo_inicial, String nodo_final) {
         ArrayList<Nodo> extrae = new ArrayList<>();
@@ -563,8 +568,54 @@ public class Grafo {
         System.out.println("No existe solución");
     }
 
+    //Busqueda primero el mejor
+    /*
+     * Realiza una búsqueda primero el mejor desde un nodo inicial hasta un nodo final,
+     * @param nodo_inicial El nodo desde donde se inicia la búsqueda.
+     * @param nodo_final El nodo que se desea encontrar durante la búsqueda.
+     */
+
+    public void busquedaPrimeroElMejor(String nodo_inicial, String nodo_final) {
+        ArrayList<Nodo> nodos_visitados = new ArrayList<>();
+        ArrayList<Nodo> queue = new ArrayList<>();
+        Nodo nodo_inicial_obj = findNode(nodo_inicial);
+        Nodo nodo_final_obj = findNode(nodo_final);
+        System.out.println("Cola: ");
+        queue.add(nodo_inicial_obj);
+        while (!queue.isEmpty()){
+            Nodo nodo_actual = queue.get(0);
+            //Imprimir la cola
+            for (Nodo nodo : queue) {
+                System.out.print("|"+nodo.getName() + ":"+nodo.getPeso()+"|");
+            }
+            System.out.println();
+            queue.remove(0);
+            if (!nodo_actual.isVisited()){
+                nodos_visitados.add(nodo_actual);
+                nodo_actual.setVisited(true);
+                if (nodo_actual.getName().equals(nodo_final_obj.getName())){
+                    break;
+                }
+                ArrayList<Nodo> temp = new ArrayList<>();
+                for (Edge way : nodo_actual.getWays()) {
+                    //Verificar si el nodo ya fue visitado o si ya esta en la lista de nodos a visitar
+                    if (!way.getDestination().isVisited() && !queue.contains(way.getDestination())) {
+                        temp.add(0, way.getDestination());
+                    }
+                }
+                //Ordenar la lista de hijos de acuerdo al peso
+                temp.sort(Comparator.comparing(Nodo::getPeso));
+
+                queue.addAll(0,temp);
+            }
+        }
+        System.out.println("Nodos visitados: ");
+        for (Nodo nodo : nodos_visitados) {
+            System.out.print("|"+nodo.getName() + ":"+nodo.getPeso()+"|");
+        }
 
 
+    }
 
 
 
