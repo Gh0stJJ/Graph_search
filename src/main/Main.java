@@ -17,6 +17,9 @@ public class Main {
 
         //<ArrayList<String>> data = dt.getData("src/data/graph_Data.csv");
         ArrayList<ArrayList<String>> data = dt.getData("src/data/Grafos/test.csv");
+        //List of weights
+        Data dtw = new Data();
+        ArrayList<ArrayList<String>> weights = dtw.getData("src/data/Grafos/Test_weights.csv");
         //Remove header
         //data.remove(0);
         //Add nodes
@@ -36,11 +39,18 @@ public class Main {
             //double distance = 1;
             graph.connectNodes(nodo_or,nodo_des,distance);
         }
+        //Add weights
+        for (ArrayList<String> row : weights) {
+            int peso = Integer.parseInt(row.get(1));
+            graph.addWeight(row.get(0),peso);
+        }
+
+
 
         //Menu
         System.out.println("Menu");
 
-        int sel = 0;
+        String sel = " ";
 
         do{
             System.out.println();
@@ -50,12 +60,17 @@ public class Main {
             System.out.println("4. Busqueda bidireccional anchura");
             System.out.println("5. Busqueda bidireccional profundidad");
             System.out.println("6. Busqueda de costo uniforme");
-            System.out.println("7. Salir");
+            System.out.println("-------------Busquedas Heuristicas----------------");
+            System.out.println("7. Busqueda Hill Climbing");
+            System.out.println("8. Busqueda Primero el mejor");
+            System.out.println("9. Busqueda A*");
+            System.out.println("10. Busqueda Avara");
+            System.out.println("_. Salir");
             Scanner sc = new Scanner(System.in);
-            sel= sc.nextInt();
+            sel= sc.nextLine();
 
             switch (sel){
-                case 1:
+                case "1":
                     System.out.println("Busqueda a ciegas anchura");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen = sc.next();
@@ -65,7 +80,7 @@ public class Main {
                     graph.busquedaAnchura(nodo_origen,nodo_destino);
 
                     break;
-                case 2:
+                case "2":
                     System.out.println("Busqueda a ciegas profundidad");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen2 = sc.next();
@@ -76,7 +91,7 @@ public class Main {
                     break;
 
 
-                case 3:
+                case "3":
                     System.out.println("Busqueda a ciegas profundidad iterativa");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen3 = sc.next();
@@ -86,7 +101,7 @@ public class Main {
                     graph.busquedaProfundidadIterativa(nodo_origen3,nodo_destino3);
                     break;
 
-                case 4:
+                case "4":
                     System.out.println("Busqueda bidireccional anchura");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen4 = sc.next();
@@ -97,7 +112,7 @@ public class Main {
                     break;
 
 
-                case 5:
+                case "5":
                     System.out.println("Busqueda bidireccional profundidad");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen5 = sc.next();
@@ -107,7 +122,7 @@ public class Main {
                     graph.busquedaBidireccionalProfundidad(nodo_origen5,nodo_destino5);
                     break;
 
-                case 6:
+                case "6":
                     System.out.println("Busqueda de costo uniforme");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen6 = sc.next();
@@ -117,12 +132,22 @@ public class Main {
                     graph.busquedaCosteUniforme(nodo_origen6,nodo_destino6);
                     break;
 
-                case 7:
+                case "7":
+                    System.out.println("Busqueda Hill Climbing");
+                    System.out.println("Ingrese el nodo origen");
+                    String nodo_origen7 = sc.next();
+                    System.out.println("Ingrese el nodo destino");
+                    String nodo_destino7 = sc.next();
+
+                    graph.busquedaHillClimbing(nodo_origen7,nodo_destino7);
+                    break;
+
+                case ".":
                     System.out.println("Salir");
                     break;
             }
 
-        }while (sel != 7);
+        }while (!sel.equals("."));
 
 
 

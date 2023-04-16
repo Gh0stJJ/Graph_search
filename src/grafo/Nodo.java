@@ -7,7 +7,6 @@ public class Nodo implements Comparable<Nodo> {
     private final String name;
     private String id;
     private ArrayList<Edge> ways;
-
     private int peso;
 
     private boolean visited = false;

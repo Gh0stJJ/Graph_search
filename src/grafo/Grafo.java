@@ -46,6 +46,10 @@ public class Grafo {
         }
     }
 
+    public void addWeight(String nam_node, int peso){
+        findNode(nam_node).setPeso(peso);
+    }
+
 
     public ArrayList<Nodo> getNodes() {
         return nodes;
@@ -117,8 +121,6 @@ public class Grafo {
      * devolviendo una lista con los nodos visitados durante la búsqueda.
      * @param nodo_inicial El nodo desde donde se inicia la búsqueda.
      * @param nodo_final El nodo que se desea encontrar durante la búsqueda.
-     * @return Una lista con los nodos visitados durante la búsqueda en profundidad,
-     *         en el orden en que fueron visitados.
      */
     public void busquedaProfundidad(String nodo_inicial, String nodo_final){
         //TODO
@@ -504,7 +506,62 @@ public class Grafo {
         System.out.println("No existe solución");
     }
 
+    //Busquedas heurísticas
 
+    //Busqueda hill climbing
+
+    public void busquedaHillClimbing(String nodo_inicial, String nodo_final) {
+        ArrayList<Nodo> extrae = new ArrayList<>();
+        //Cola
+        ArrayList<Nodo> cola = new ArrayList<>();
+        Nodo nodo_inicial_obj = findNode(nodo_inicial);
+        Nodo nodo_final_obj = findNode(nodo_final);
+        cola.add(nodo_inicial_obj);
+        while (!cola.isEmpty()) {
+            //Ordenamos la cola de acuerdo al peso
+            //cola.sort(Comparator.comparing(Pair::getValue));
+            //Imprimir la cola
+            for (Nodo nodo : cola) {
+                System.out.print("["+nodo.getName() + ":" + nodo.getPeso()+"]");
+            }
+            System.out.println();
+            // Se extrae el nodo con menor costo acumulado de la cola.
+            //Pair<Nodo, Double> nodoActual = cola.stream().min(Comparator.comparing(Pair::getValue)).get();
+            Nodo nodoActual = cola.get(0);
+            cola.remove(nodoActual);
+            extrae.add(nodoActual);
+
+            // Si llegamos al nodo final, se termina la búsqueda.
+            if (nodoActual.equals(nodo_final_obj)) {
+                // Hacer algo con la solución encontrada
+                System.out.println("Solucion encontrada");
+                for (Nodo nodo : extrae) {
+                    System.out.print("["+nodo.getName() + ":" + nodo.getPeso()+"]");
+                }
+                return;
+            }
+            ArrayList<Nodo> temp = new ArrayList<>();
+            // Para cada vecino del nodo actual, se actualiza el costo acumulado y se añade a la cola.
+            for (Edge arista : nodoActual.getWays()) {
+                Nodo vecino = arista.getDestination();
+                // Verificamos que el vecino no haya sido visitado y que no esté en la cola.
+
+
+                if (!extrae.contains(vecino) && !cola.contains(vecino)) {
+                    temp.add(vecino);
+                }
+
+            }
+            //Ordenamos la cola de acuerdo al peso
+            temp.sort(Comparator.comparing(Nodo::getPeso));
+            //Añadimos el vecino con menor peso a la cola
+            cola.add(0,temp.get(0));
+            temp.remove(0);
+            cola.addAll(temp);
+        }
+        // Si la cola se vacía sin encontrar el nodo final, no existe solución.
+        System.out.println("No existe solución");
+    }
 
 
 
