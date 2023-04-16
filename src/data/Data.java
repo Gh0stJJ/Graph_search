@@ -22,7 +22,7 @@ public class Data {
         //Read data from csv
         try {
             CSVParser parser = new CSVParserBuilder()
-                    .withSeparator(',')
+                    .withSeparator(';')
                     .build();
             CSVReader reader = new CSVReaderBuilder(new FileReader(path))
                     .withCSVParser(parser)

@@ -18,16 +18,20 @@ public class Bus_Ciegas {
      * Busqueda en anchura
      * @param nodo_inicial Nombre del nodo inicial
      * @param nodo_final Nombre del nodo final
-     * @return ArrayList<Nodo> con los nodos visitados
      */
-    public ArrayList<Nodo> busquedaAnchura(String nodo_inicial, String nodo_final){
+    public void busquedaAnchura(String nodo_inicial, String nodo_final){
         //TODO
         ArrayList<Nodo> nodos_visitados = new ArrayList<>();
         ArrayList<Nodo> nodos_a_visitar = new ArrayList<>();
         Nodo nodo_inicial_obj = graph.findNode(nodo_inicial);
         Nodo nodo_final_obj = graph.findNode(nodo_final);
         nodos_a_visitar.add(nodo_inicial_obj);
+        System.out.println("Cola: ");
         while (!nodos_a_visitar.isEmpty()){
+            for (Nodo nodo : nodos_a_visitar) {
+                System.out.print("|"+nodo.getName() + "|");
+            }
+            System.out.println();
             Nodo nodo_actual = nodos_a_visitar.get(0);
             nodos_a_visitar.remove(0);
             if (!nodo_actual.isVisited()){
@@ -51,7 +55,10 @@ public class Bus_Ciegas {
             }
         }
 
-        return nodos_visitados;
+        System.out.println("Nodos visitados: ");
+        for (Nodo nodo : nodos_visitados) {
+            System.out.print("|"+nodo.getName() + "|");
+        }
     }
 
     /**
@@ -62,16 +69,20 @@ public class Bus_Ciegas {
      * @return Una lista con los nodos visitados durante la búsqueda en profundidad,
      *         en el orden en que fueron visitados.
      */
-    public ArrayList<Nodo> busquedaProfundidad(String nodo_inicial, String nodo_final){
+    public void busquedaProfundidad(String nodo_inicial, String nodo_final){
         //TODO
         ArrayList<Nodo> nodos_visitados = new ArrayList<>();
         ArrayList<Nodo> queue = new ArrayList<>();
         Nodo nodo_inicial_obj = graph.findNode(nodo_inicial);
         Nodo nodo_final_obj = graph.findNode(nodo_final);
-
+        System.out.println("Cola: ");
         queue.add(nodo_inicial_obj);
         while (!queue.isEmpty()){
             Nodo nodo_actual = queue.get(0);
+            for (Nodo nodo : queue) {
+                System.out.print("|"+nodo.getName() + "|");
+            }
+            System.out.println();
             queue.remove(0);
             if (!nodo_actual.isVisited()){
                 nodos_visitados.add(nodo_actual);
@@ -92,7 +103,10 @@ public class Bus_Ciegas {
                 queue.addAll(0,temp);
             }
         }
-        return nodos_visitados;
+        System.out.println("Nodos visitados: ");
+        for (Nodo nodo : nodos_visitados) {
+            System.out.print("|"+nodo.getName() + "|");
+        }
     }
 
     /*
@@ -138,7 +152,18 @@ public class Bus_Ciegas {
                 Collections.reverse(temp);
                 // Agregamos los nodos hijos con nivel + 1
                 for (Nodo hijo : temp) {
-                    cola.add(0,new Pair<>(hijo, nivel_actual + 1));
+                    boolean exists = false;
+                    for (Pair<Nodo, Integer> pair : cola) {
+                        if (pair.getKey().getName().equals(hijo.getName())){
+                            exists = true;
+                            break;
+                        }
+                    }
+                    //Verificar si el nodo ya fue visitado o si ya esta en la lista de nodos a visitar
+
+                    if (!nodos_visitados.contains(hijo) && !exists) {
+                        cola.add(0, new Pair<>(hijo, nivel_actual + 1));
+                    }
                 }
 
             }

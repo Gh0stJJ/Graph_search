@@ -6,6 +6,7 @@ import grafo.Nodo;
 import search.Bus_Ciegas;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
 
@@ -15,7 +16,7 @@ public class Main {
         Grafo graph = new Grafo();
 
         //<ArrayList<String>> data = dt.getData("src/data/graph_Data.csv");
-        ArrayList<ArrayList<String>> data = dt.getData("src/data/Grafos/HGrafo2.csv");
+        ArrayList<ArrayList<String>> data = dt.getData("src/data/Grafos/test.csv");
         //Remove header
         //data.remove(0);
         //Add nodes
@@ -32,8 +33,100 @@ public class Main {
             Nodo nodo_or = graph.findNode(row.get(0));
             Nodo nodo_des = graph.findNode(row.get(1));
             double distance = Double.parseDouble(row.get(2));
+            //double distance = 1;
             graph.connectNodes(nodo_or,nodo_des,distance);
         }
+
+        //Menu
+        System.out.println("Menu");
+
+        int sel = 0;
+
+        do{
+            System.out.println();
+            System.out.println("1. Busqueda a ciegas anchura");
+            System.out.println("2. Busqueda a ciegas profundidad");
+            System.out.println("3. Busqueda a ciegas profundidad iterativa");
+            System.out.println("4. Busqueda bidireccional anchura");
+            System.out.println("5. Busqueda bidireccional profundidad");
+            System.out.println("6. Busqueda de costo uniforme");
+            System.out.println("7. Salir");
+            Scanner sc = new Scanner(System.in);
+            sel= sc.nextInt();
+
+            switch (sel){
+                case 1:
+                    System.out.println("Busqueda a ciegas anchura");
+                    System.out.println("Ingrese el nodo origen");
+                    String nodo_origen = sc.next();
+                    System.out.println("Ingrese el nodo destino");
+                    String nodo_destino = sc.next();
+
+                    graph.busquedaAnchura(nodo_origen,nodo_destino);
+
+                    break;
+                case 2:
+                    System.out.println("Busqueda a ciegas profundidad");
+                    System.out.println("Ingrese el nodo origen");
+                    String nodo_origen2 = sc.next();
+                    System.out.println("Ingrese el nodo destino");
+                    String nodo_destino2 = sc.next();
+
+                    graph.busquedaProfundidad(nodo_origen2,nodo_destino2);
+                    break;
+
+
+                case 3:
+                    System.out.println("Busqueda a ciegas profundidad iterativa");
+                    System.out.println("Ingrese el nodo origen");
+                    String nodo_origen3 = sc.next();
+                    System.out.println("Ingrese el nodo destino");
+                    String nodo_destino3 = sc.next();
+
+                    graph.busquedaProfundidadIterativa(nodo_origen3,nodo_destino3);
+                    break;
+
+                case 4:
+                    System.out.println("Busqueda bidireccional anchura");
+                    System.out.println("Ingrese el nodo origen");
+                    String nodo_origen4 = sc.next();
+                    System.out.println("Ingrese el nodo destino");
+                    String nodo_destino4 = sc.next();
+
+                    graph.busquedaBidireccionalAnchura(nodo_origen4,nodo_destino4);
+                    break;
+
+
+                case 5:
+                    System.out.println("Busqueda bidireccional profundidad");
+                    System.out.println("Ingrese el nodo origen");
+                    String nodo_origen5 = sc.next();
+                    System.out.println("Ingrese el nodo destino");
+                    String nodo_destino5 = sc.next();
+
+                    graph.busquedaBidireccionalProfundidad(nodo_origen5,nodo_destino5);
+                    break;
+
+                case 6:
+                    System.out.println("Busqueda de costo uniforme");
+                    System.out.println("Ingrese el nodo origen");
+                    String nodo_origen6 = sc.next();
+                    System.out.println("Ingrese el nodo destino");
+                    String nodo_destino6 = sc.next();
+
+                    graph.busquedaCosteUniforme(nodo_origen6,nodo_destino6);
+                    break;
+
+                case 7:
+                    System.out.println("Salir");
+                    break;
+            }
+
+        }while (sel != 7);
+
+
+
+
 
         //Print nodes
         //graph.printNodes();
@@ -57,7 +150,7 @@ public class Main {
         } */
 
         //Busqueda a ciegas profundidad iterativa
-       /* Bus_Ciegas busqueda = new Bus_Ciegas(graph);
+        /*Bus_Ciegas busqueda = new Bus_Ciegas(graph);
         ArrayList<Nodo> nodos_visitados = busqueda.busquedaProfundidadIterativa("A","L");
         System.out.println("Nodos visitados: ");
         for (Nodo nodo : nodos_visitados) {
@@ -71,8 +164,8 @@ public class Main {
 
         //Busqueda coste uniforme
 
-        Bus_Ciegas busqueda = new Bus_Ciegas(graph);
-        busqueda.busquedaCosteUniforme("A","F");
+       // Bus_Ciegas busqueda = new Bus_Ciegas(graph);
+        //busqueda.busquedaCosteUniforme("A","F");
 
     }
 }
