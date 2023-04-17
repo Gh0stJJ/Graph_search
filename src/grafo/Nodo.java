@@ -8,6 +8,7 @@ public class Nodo implements Comparable<Nodo> {
     private String id;
     private ArrayList<Edge> ways;
     private int peso;
+    private double cost;
 
     private boolean visited = false;
 
@@ -15,6 +16,14 @@ public class Nodo implements Comparable<Nodo> {
         this.name = name;
         //this.id = id;
         ways = new ArrayList<Edge>();
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 
     public void addWay(Nodo dest_node, double distance){

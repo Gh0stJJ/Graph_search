@@ -617,8 +617,181 @@ public class Grafo {
 
     }
 
+    //Busqueda A*
+
+    /*
+     * Realiza una búsqueda A* desde un nodo inicial hasta un nodo final,
+     * @param nodo_inicial El nodo desde donde se inicia la búsqueda.
+     * @param nodo_final El nodo que se desea encontrar durante la búsqueda.
+     */
+
+    public void busquedaAStar(String nodo_inicial, String nodo_final) {
+        //Format <Nodo, Peso+Heuristica>
+        ArrayList<Pair<Nodo,Double>> nodos_visitados = new ArrayList<>();
+        ArrayList<Pair<Nodo,Double>> queue = new ArrayList<>();
+        //HashMap para conservar el costo acumulado de cada nodo
+        HashMap<Nodo,Double> costo_acumulado = new HashMap<>();
+        Nodo nodo_inicial_obj = findNode(nodo_inicial);
+        Nodo nodo_final_obj = findNode(nodo_final);
+        System.out.println("Cola: ");
+        queue.add(new Pair<>(nodo_inicial_obj, nodo_inicial_obj.getPeso() + 0.0));
+        costo_acumulado.put(nodo_inicial_obj, 0.0);
+        while (!queue.isEmpty()) {
+            Pair<Nodo,Double> nodo_actual = queue.get(0);
+            //Imprimir la cola
+            for (Pair<Nodo,Double> nodo : queue) {
+                System.out.print("|" + nodo.getKey() + ":" + nodo.getValue() + "|");
+            }
+            System.out.println();
+            queue.remove(0);
+            nodos_visitados.add(nodo_actual);
+            nodo_actual.getKey().setVisited(true);
+
+            if (nodo_actual.getKey().getName().equals(nodo_final_obj.getName())) {
+                break;
+            }
+            //Expandir el nodo
+
+            for (Edge way : nodo_actual.getKey().getWays()) {
+                Nodo vecino = way.getDestination();
+                //Costo acumulado del nodo actual
+                double costo_acumulado_actual = costo_acumulado.get(nodo_actual.getKey());
+                //Costo acumulado del nodo vecino
+                double costo_acumulado_vecino = costo_acumulado_actual + way.getDistance();
+                //Costo heuristico del nodo vecino
+                double costo_heuristico_vecino = vecino.getPeso();
+                //Costo total del nodo vecino
+                double costo_total_vecino = costo_acumulado_vecino + costo_heuristico_vecino;
+                //Crear el nodo vecino con el costo total
+                Pair<Nodo,Double> nodo_vecino = new Pair<>(vecino, costo_total_vecino);
+                //Verificar si el nodo vecino se encuentra en la cola comprobando por la key
+                boolean existe = false;
 
 
+                //Buscamos si el nodo vecino ya esta en la cola
+                for (Pair<Nodo,Double> nodo : queue) {
+                    if (nodo.getKey().getName().equals(vecino.getName())) {
+                        existe = true;
+                        break;
+                    }
+                }
+                //Verificar si el nodo vecino ya fue visitado o si ya esta en la lista de nodos a visitar
+                if (!nodo_vecino.getKey().isVisited() && !existe) {
+                    costo_acumulado.put(vecino, costo_acumulado_vecino);
+                    queue.add(nodo_vecino);
+                } else if (costo_acumulado_vecino < costo_acumulado.get(vecino)) { //Si el costo acumulado del vecino es menor al costo acumulado del nodo actual
+                    costo_acumulado.put(vecino, costo_acumulado_vecino);
+                    queue.remove(nodo_vecino);
+                    queue.add(nodo_vecino);
+                }
+            }
+            //Ordenar la lista de hijos de acuerdo al coste heuristico
+            queue.sort(Comparator.comparing(Pair::getValue));
 
 
+        }
+        System.out.println("Nodos visitados: ");
+        for (Pair<Nodo,Double> nodo : nodos_visitados) {
+            System.out.print("|" + nodo.getKey() + ":" + nodo.getValue() + "|");
+        }
+
+    }
+    /*
+    public void busquedaAStar(String nodo_inicial, String nodo_final) {
+        PriorityQueue<Pair<Nodo, Double>> queue = new PriorityQueue<>(Comparator.comparing(Pair::getValue));
+        Set<Nodo> nodos_visitados = new HashSet<>();
+        Nodo nodo_inicial_obj = findNode(nodo_inicial);
+        Nodo nodo_final_obj = findNode(nodo_final);
+        System.out.println("Cola: ");
+        queue.add(new Pair<>(nodo_inicial_obj, nodo_inicial_obj.getPeso() + 0.0));
+        nodo_inicial_obj.setCost(0.0);
+        while (!queue.isEmpty()) {
+            Pair<Nodo, Double> nodo_actual = queue.poll();
+            //Imprimir la cola
+            for (Pair<Nodo, Double> nodo : queue) {
+                System.out.print("|" + nodo.getKey() + ":" + nodo.getValue() + "|");
+            }
+            System.out.println();
+            nodos_visitados.add(nodo_actual.getKey());
+            nodo_actual.getKey().setVisited(true);
+
+            if (nodo_actual.getKey().getName().equals(nodo_final_obj.getName())) {
+                break;
+            }
+            //Expandir el nodo
+            for (Edge way : nodo_actual.getKey().getWays()) {
+                Nodo vecino = way.getDestination();
+                //Costo acumulado del nodo actual
+                double costo_acumulado_actual = nodo_actual.getKey().getCost();
+                //Costo acumulado del nodo vecino
+                double costo_acumulado_vecino = costo_acumulado_actual + way.getDistance();
+                //Costo heuristico del nodo vecino
+                double costo_heuristico_vecino = vecino.getPeso();
+                //Costo total del nodo vecino
+                double costo_total_vecino = costo_acumulado_vecino + costo_heuristico_vecino;
+                //Crear el nodo vecino con el costo total
+                Pair<Nodo, Double> nodo_vecino = new Pair<>(vecino, costo_total_vecino);
+                //Verificar si el nodo vecino ya fue visitado
+                if (!vecino.isVisited() && !nodos_visitados.contains(vecino)) {
+                    vecino.setCost(costo_acumulado_vecino);
+                    queue.add(nodo_vecino);
+                } else if (costo_acumulado_vecino < vecino.getCost()) {
+                    vecino.setCost(costo_acumulado_vecino);
+                    queue.removeIf(n -> n.getKey().getName().equals(vecino.getName()));
+                    queue.add(nodo_vecino);
+                }
+            }
+        }
+        System.out.println("Nodos visitados: ");
+        for (Nodo nodo : nodos_visitados) {
+            System.out.print("|" + nodo.getName() + ":" + nodo.getPeso() + "|");
+        }
+    } */
+
+    //Greedy search
+    /*
+    * Realiza la busqueda greedy desde un nodo inicial hasta un nodo final
+    * @param nodo_inicial Nodo inicial
+    * @param nodo_final Nodo final
+    *
+     */
+    public void busquedaGreedy(String nodo_inicial, String nodo_final) {
+        ArrayList<Nodo> queue = new ArrayList<>();
+        ArrayList<Nodo> nodos_visitados = new ArrayList<>();
+        Nodo nodo_inicial_obj = findNode(nodo_inicial);
+        Nodo nodo_final_obj = findNode(nodo_final);
+        System.out.println("Cola: ");
+        queue.add(nodo_inicial_obj);
+        nodo_inicial_obj.setVisited(true);
+        while (!queue.isEmpty()) {
+
+            //Imprimir la cola
+            for (Nodo nodo : queue) {
+                System.out.print("|" + nodo.getName() + ":" + nodo.getPeso() + "|");
+            }
+            System.out.println();
+            Nodo nodo_actual = queue.get(0);
+            queue.remove(0);
+            nodos_visitados.add(nodo_actual);
+
+            assert nodo_actual != null;
+            if (nodo_actual.getName().equals(nodo_final_obj.getName())) {
+                break;
+            }
+            //Expandir el nodo
+            for (Edge way : nodo_actual.getWays()) {
+                //Verificar si el nodo vecino ya fue visitado
+                if (!queue.contains(way.getDestination()) && !nodos_visitados.contains(way.getDestination())) {
+                    queue.add(way.getDestination());
+                }
+            }
+            //Ordenar la lista de hijos de acuerdo al coste heuristico
+            queue.sort(Comparator.comparing(Nodo::getPeso));
+        }
+        System.out.println("Nodos visitados: ");
+        for (Nodo nodo : nodos_visitados) {
+            System.out.print("|" + nodo.getName() + ":" + nodo.getPeso() + "|");
+        }
+
+    }
 }

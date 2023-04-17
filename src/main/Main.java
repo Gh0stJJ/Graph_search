@@ -152,6 +152,26 @@ public class Main {
                     graph.busquedaPrimeroElMejor(nodo_origen8,nodo_destino8);
                     break;
 
+                case "9":
+                    System.out.println("Busqueda A*");
+                    System.out.println("Ingrese el nodo origen");
+                    String nodo_origen9 = sc.next();
+                    System.out.println("Ingrese el nodo destino");
+                    String nodo_destino9 = sc.next();
+
+                    graph.busquedaAStar(nodo_origen9,nodo_destino9);
+                    break;
+
+                case "10":
+                    System.out.println("Busqueda Avara");
+                    System.out.println("Ingrese el nodo origen");
+                    String nodo_origen10 = sc.next();
+                    System.out.println("Ingrese el nodo destino");
+                    String nodo_destino10 = sc.next();
+
+                    graph.busquedaGreedy(nodo_origen10,nodo_destino10);
+                    break;
+
                 case ".":
                     System.out.println("Salir");
                     break;

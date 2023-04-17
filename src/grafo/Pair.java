@@ -22,7 +22,10 @@ public class Pair<T,U> {
         return String.format("(%s)", key);
     }
 
-    //override compareTo by key
+    //override contains method
+
+
+
 
 
 
