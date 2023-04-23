@@ -133,7 +133,6 @@ public class Grafo {
      * Busqueda en anchura
      * @param nodo_inicial Nombre del nodo inicial
      * @param nodo_final Nombre del nodo final
-     * @return Branching factor
      */
     public void busquedaAnchura(String nodo_inicial, String nodo_final){
         //TODO
@@ -566,6 +565,12 @@ public class Grafo {
                 // Si el vecino no ha sido visitado o si se encontró un camino más corto, se actualiza su costo acumulado y se añade a la cola.
                 if (!costo_acumulado.containsKey(vecino) || costoAcumuladoNuevo < costo_acumulado.get(vecino)) {
                     costo_acumulado.put(vecino, costoAcumuladoNuevo);
+                    for (Pair<Nodo, Double> nodo1 : cola) {
+                        if (nodo1.getKey().getId().equals(vecino.getId())){
+                            cola.remove(nodo1);
+                            break;
+                        }
+                    }
                     cola.add(new Pair<>(vecino, costoAcumuladoNuevo));
                 }
             }
