@@ -55,6 +55,14 @@ public class Grafo {
         return nodes;
     }
 
+    public ArrayList<Edge> getEdges(){
+        ArrayList<Edge> edges = new ArrayList<>();
+        for (Nodo node : nodes) {
+            edges.addAll(node.getWays());
+        }
+        return edges;
+    }
+
 
     public void printNodes() {
         for (Nodo node : nodes) {
@@ -67,12 +75,65 @@ public class Grafo {
             System.out.println("-----------------------------");
         }
     }
+    public void flush(){
+        for (Nodo node : nodes) {
+            node.setVisited(false);
+        }
+    }
+
+    //Obtener profundidad de un nodo
+    public int getDepth(String root, String dest) {
+        flush();
+        ArrayList<Pair<Nodo, Integer>> cola = new ArrayList<>(); // Usamos Pair para guardar el nodo y su nivel
+        Nodo nodo_inicial_obj = findNode(root);
+        Nodo nodo_final_obj = findNode(dest);
+
+        cola.add(new Pair<>(nodo_inicial_obj, 0)); // Agregamos el nodo inicial con nivel 0
+        ArrayList<Nodo> nodos_visitados = new ArrayList<>();
+        while (!cola.isEmpty()) {
+            Pair<Nodo, Integer> nodo_actual_par = cola.remove(0);
+            Nodo nodo_actual = nodo_actual_par.getKey();
+            int nivel_actual = nodo_actual_par.getValue();
+            nodo_actual.setVisited(true);
+            if (nodo_actual.getName().equals(nodo_final_obj.getName())) {
+                return nivel_actual;
+            }
+            ArrayList<Nodo> temp = new ArrayList<>();
+            for (Edge way : nodo_actual.getWays()) {
+                temp.add(way.getDestination());
+            }
+            // Agregamos los nodos hijos con nivel + 1
+            for (Nodo hijo : temp) {
+                boolean exists = false;
+                for (Pair<Nodo, Integer> pair : cola) {
+                    if (pair.getKey().getName().equals(hijo.getName())) {
+                        exists = true;
+                        break;
+                    }
+                }
+                //Verificar si el nodo ya fue visitado o si ya esta en la lista de nodos a visitar
+
+                if (!hijo.isVisited() && !exists) {
+                    cola.add(0, new Pair<>(hijo, nivel_actual + 1));
+                }
+            }
+
+        }
+
+        return -1;
+
+    }
+
+
+
+
     //Busquedas a ciegas
 
     /**
      * Busqueda en anchura
      * @param nodo_inicial Nombre del nodo inicial
      * @param nodo_final Nombre del nodo final
+     * @return Branching factor
      */
     public void busquedaAnchura(String nodo_inicial, String nodo_final){
         //TODO
@@ -81,7 +142,9 @@ public class Grafo {
         Nodo nodo_inicial_obj = findNode(nodo_inicial);
         Nodo nodo_final_obj = findNode(nodo_final);
         nodos_a_visitar.add(nodo_inicial_obj);
+        int branching_factor = 0;
         System.out.println("Cola: ");
+
         while (!nodos_a_visitar.isEmpty()){
             for (Nodo nodo : nodos_a_visitar) {
                 System.out.print("|"+nodo.getName() + "|");
@@ -96,8 +159,13 @@ public class Grafo {
                     break;
                 }
                 ArrayList<Nodo> hijos_ord = new ArrayList<>();
+                int hijos = 0;
                 for (Edge way : nodo_actual.getWays()) {
                     hijos_ord.add(way.getDestination());
+                    hijos++;
+                }
+                if (hijos > branching_factor){
+                    branching_factor = hijos;
                 }
                 Collections.sort(hijos_ord);
                 //Verificar si el nodo ya fue visitado o si ya esta en la lista de nodos a visitar
@@ -114,6 +182,7 @@ public class Grafo {
         for (Nodo nodo : nodos_visitados) {
             System.out.print("|"+nodo.getName() + "|");
         }
+        //return branching_factor;
     }
 
     /**
@@ -231,10 +300,9 @@ public class Grafo {
      * devolviendo una lista con los nodos visitados durante la búsqueda.
      * @param nodo_inicial El nodo desde donde se inicia la búsqueda.
      * @param nodo_final El nodo que se desea encontrar durante la búsqueda.
-     * @return Una lista con los nodos visitados durante la búsqueda en profundidad iterativa,
-     *         en el orden en que fueron visitados.
+     * @return profundidad La profundidad en la que se encontró el nodo final.
      */
-    public ArrayList<Nodo> busquedaProfundidadIterativa(String nodo_inicial, String nodo_final) {
+    public int busquedaProfundidadIterativa(String nodo_inicial, String nodo_final) {
         //TODO
         int profundidad_actual = 0;
         ArrayList<Nodo> nodos_visitados = new ArrayList<>();
@@ -245,7 +313,7 @@ public class Grafo {
             nodos_visitados.addAll(resultado.getKey());
             System.out.println("Extrae  "+ resultado.getKey());
             if (resultado.getValue()) {
-                return nodos_visitados;
+                return profundidad_actual;
             }
             profundidad_actual++;
         }
@@ -458,7 +526,7 @@ public class Grafo {
      * @param nodo_final El nodo que se desea encontrar durante la búsqueda.
      */
 
-    public void busquedaCosteUniforme(String nodo_inicial, String nodo_final) {
+    public Double busquedaCosteUniforme(String nodo_inicial, String nodo_final) {
         ArrayList<Pair<Nodo,Double>> extrae = new ArrayList<>();
         //Cola
         ArrayList<Pair<Nodo,Double>> cola = new ArrayList<>();
@@ -488,7 +556,7 @@ public class Grafo {
                 for (Pair<Nodo, Double> nodo1 : extrae) {
                     System.out.print("["+nodo1.getKey().getName() + " : " + nodo1.getValue()+"] ");
                 }
-                return;
+                return nodoActual.getValue();
             }
             // Para cada vecino del nodo actual, se actualiza el costo acumulado y se añade a la cola.
             for (Edge arista : nodo.getWays()) {
@@ -504,6 +572,7 @@ public class Grafo {
         }
         // Si la cola se vacía sin encontrar el nodo final, no existe solución.
         System.out.println("No existe solución");
+        return null;
     }
 
     //Busquedas heurísticas

@@ -3,6 +3,7 @@ package main;
 import data.Data;
 import grafo.Grafo;
 import grafo.Nodo;
+import grafo.Pair;
 import search.Bus_Ciegas;
 
 import java.util.ArrayList;
@@ -14,14 +15,16 @@ public class Main {
         //Read data
         Data dt = new Data();
         Grafo graph = new Grafo();
+        ArrayList<Pair<String,Double>> search_times = new ArrayList<>();
+        ArrayList<Pair<String,Double>> comp_cost = new ArrayList<>();
 
-        //<ArrayList<String>> data = dt.getData("src/data/graph_Data.csv");
-        ArrayList<ArrayList<String>> data = dt.getData("src/data/Grafos/test.csv");
+        //jfilechooser
+        ArrayList<ArrayList<String>> data = dt.getData("src/data/Grafos/HGrafo2.csv");
         //List of weights
         Data dtw = new Data();
-        ArrayList<ArrayList<String>> weights = dtw.getData("src/data/Grafos/Test_weights.csv");
+        ArrayList<ArrayList<String>> weights = dtw.getData("src/data/Grafos/HGrafo2_Pesos.csv");
         //Remove header
-        //data.remove(0);
+
         //Add nodes
 
         for (ArrayList<String> row : data) {
@@ -44,6 +47,10 @@ public class Main {
             int peso = Integer.parseInt(row.get(1));
             graph.addWeight(row.get(0),peso);
         }
+
+        //Graph properties
+        float num_nodes = graph.getNodes().size();
+        float num_edges = graph.getEdges().size();
 
 
 
@@ -68,113 +75,164 @@ public class Main {
             System.out.println("_. Salir");
             Scanner sc = new Scanner(System.in);
             sel= sc.nextLine();
+            double b= Math.ceil(num_edges/num_nodes);
 
-            switch (sel){
-                case "1":
+            switch (sel) {
+                case "1" -> {
                     System.out.println("Busqueda a ciegas anchura");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino = sc.next();
-
-                    graph.busquedaAnchura(nodo_origen,nodo_destino);
-
-                    break;
-                case "2":
+                    //time start
+                    long start = System.nanoTime();
+                    graph.busquedaAnchura(nodo_origen, nodo_destino);
+                    //time end
+                    long end = System.nanoTime();
+                    //time elapsed
+                    long timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Anchura",timeElapsed*Math.pow(10,-9)));
+                    int d = graph.getDepth(nodo_origen,nodo_destino);
+                    //Complejidad computacional y tiempo de busqueda busqueda anchura
+                    double complex = (Math.pow(b,d));
+                    comp_cost.add(new Pair<>("Busqueda Anchura",complex));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
+                    graph.flush();
+                }
+                case "2" -> {
                     System.out.println("Busqueda a ciegas profundidad");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen2 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino2 = sc.next();
-
-                    graph.busquedaProfundidad(nodo_origen2,nodo_destino2);
-                    break;
-
-
-                case "3":
+                    //time start
+                    long start = System.nanoTime();
+                    graph.busquedaProfundidad(nodo_origen2, nodo_destino2);
+                    //time end
+                    long end = System.nanoTime();
+                    //time elapsed
+                    long timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Profundidad",timeElapsed*Math.pow(10,-9)));
+                    double complex = num_edges + num_nodes;
+                    comp_cost.add(new Pair<>("Busqueda Profundidad",complex));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    System.out.println("\n Complejidad computacional: "+complex + " O(n + m): " + num_edges + "+" + num_nodes);
+                    graph.flush();
+                }
+                case "3" -> {
                     System.out.println("Busqueda a ciegas profundidad iterativa");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen3 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino3 = sc.next();
-
-                    graph.busquedaProfundidadIterativa(nodo_origen3,nodo_destino3);
-                    break;
-
-                case "4":
+                    //time start
+                    long start = System.nanoTime();
+                    int d = graph.busquedaProfundidadIterativa(nodo_origen3, nodo_destino3);
+                    //time end
+                    long end = System.nanoTime();
+                    //time elapsed
+                    long timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Profundidad Iterativa",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda profundidad iterativa
+                    double complex = (Math.pow(b,d));
+                    comp_cost.add(new Pair<>("Busqueda Profundidad Iterativa",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
+                    graph.flush();
+                }
+                case "4" -> {
                     System.out.println("Busqueda bidireccional anchura");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen4 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino4 = sc.next();
-
-                    graph.busquedaBidireccionalAnchura(nodo_origen4,nodo_destino4);
-                    break;
-
-
-                case "5":
+                    int d = graph.getDepth(nodo_origen4,nodo_destino4);
+                    //time start
+                    long start = System.nanoTime();
+                    graph.busquedaBidireccionalAnchura(nodo_origen4, nodo_destino4);
+                    //time end
+                    long end = System.nanoTime();
+                    //time elapsed
+                    long timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Bidireccional Anchura",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda bidireccional anchura
+                    double complex = (Math.pow(b,(d/2.0)));
+                    comp_cost.add(new Pair<>("Busqueda Bidireccional Anchura",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
+                    graph.flush();
+                }
+                case "5" -> {
                     System.out.println("Busqueda bidireccional profundidad");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen5 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino5 = sc.next();
-
-                    graph.busquedaBidireccionalProfundidad(nodo_origen5,nodo_destino5);
-                    break;
-
-                case "6":
+                    int d = graph.getDepth(nodo_origen5,nodo_destino5);
+                    //time start
+                    long start = System.nanoTime();
+                    graph.busquedaBidireccionalProfundidad(nodo_origen5, nodo_destino5);
+                    //time end
+                    long end = System.nanoTime();
+                    //time elapsed
+                    long timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Bidireccional Profundidad",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda bidireccional profundidad
+                    double complex = (Math.pow(b,(d/2.0)));
+                    comp_cost.add(new Pair<>("Busqueda Bidireccional Profundidad",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
+                    graph.flush();
+                }
+                case "6" -> {
                     System.out.println("Busqueda de costo uniforme");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen6 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino6 = sc.next();
-
-                    graph.busquedaCosteUniforme(nodo_origen6,nodo_destino6);
-                    break;
-
-                case "7":
+                    //int b = graph.busquedaAnchura(nodo_origen6, nodo_destino6);
+                    Double c = graph.busquedaCosteUniforme(nodo_origen6, nodo_destino6);
+                    System.out.println("\n Coste de busqueda: "+c);
+                    graph.flush();
+                }
+                case "7" -> {
                     System.out.println("Busqueda Hill Climbing");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen7 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino7 = sc.next();
-
-                    graph.busquedaHillClimbing(nodo_origen7,nodo_destino7);
-                    break;
-
-                case "8":
+                    graph.busquedaHillClimbing(nodo_origen7, nodo_destino7);
+                    graph.flush();
+                }
+                case "8" -> {
                     System.out.println("Busqueda Primero el mejor");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen8 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino8 = sc.next();
-
-                    graph.busquedaPrimeroElMejor(nodo_origen8,nodo_destino8);
-                    break;
-
-                case "9":
+                    graph.busquedaPrimeroElMejor(nodo_origen8, nodo_destino8);
+                    graph.flush();
+                }
+                case "9" -> {
                     System.out.println("Busqueda A*");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen9 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino9 = sc.next();
-
-                    graph.busquedaAStar(nodo_origen9,nodo_destino9);
-                    break;
-
-                case "10":
+                    graph.busquedaAStar(nodo_origen9, nodo_destino9);
+                    graph.flush();
+                }
+                case "10" -> {
                     System.out.println("Busqueda Avara");
                     System.out.println("Ingrese el nodo origen");
                     String nodo_origen10 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino10 = sc.next();
-
-                    graph.busquedaGreedy(nodo_origen10,nodo_destino10);
-                    break;
-
-                case ".":
-                    System.out.println("Salir");
-                    break;
+                    graph.busquedaGreedy(nodo_origen10, nodo_destino10);
+                    graph.flush();
+                }
+                case "." -> System.out.println("Salir");
             }
 
         }while (!sel.equals("."));
