@@ -35,10 +35,15 @@ public class Main {
 
         }
         //Add ways
+        // min distance
+        double epsilon = Double.MAX_VALUE;
         for (ArrayList<String> row : data) {
             Nodo nodo_or = graph.findNode(row.get(0));
             Nodo nodo_des = graph.findNode(row.get(1));
             double distance = Double.parseDouble(row.get(2));
+            if (distance < epsilon){
+                epsilon = distance;
+            }
             //double distance = 1;
             graph.connectNodes(nodo_or,nodo_des,distance);
         }
@@ -51,8 +56,15 @@ public class Main {
         //Graph properties
         float num_nodes = graph.getNodes().size();
         float num_edges = graph.getEdges().size();
+        //número promedio de sucesores que tiene un nodo en el árbol de búsqueda.
+        double b= num_edges/num_nodes;
+        //profundidad máxima del árbol de búsqueda
+        double dmax = Math.ceil(Math.log(num_nodes)/Math.log(b));
 
-
+        System.out.println("Profundidad maxima: "+dmax);
+        System.out.println("Numero de nodos: "+num_nodes);
+        System.out.println("Numero de aristas: "+num_edges);
+        System.out.println("Factor de ramificacion: "+b);
 
         //Menu
         System.out.println("Menu");
@@ -72,10 +84,12 @@ public class Main {
             System.out.println("8. Busqueda Primero el mejor");
             System.out.println("9. Busqueda A*");
             System.out.println("10. Busqueda Avara");
+            System.out.println("11. Resumen de busquedas");
+            System.out.println("12. Ejecutar todas las busquedas");
             System.out.println("_. Salir");
             Scanner sc = new Scanner(System.in);
             sel= sc.nextLine();
-            double b= Math.ceil(num_edges/num_nodes);
+
 
             switch (sel) {
                 case "1" -> {
@@ -114,10 +128,13 @@ public class Main {
                     //time elapsed
                     long timeElapsed = end - start;
                     search_times.add(new Pair<>("Busqueda Profundidad",timeElapsed*Math.pow(10,-9)));
-                    double complex = num_edges + num_nodes;
+                    //Complejidad computacional y tiempo de busqueda busqueda profundidad
+                    //Profundidad maxima del arbol
+
+                    double complex = (Math.pow(b,dmax));
                     comp_cost.add(new Pair<>("Busqueda Profundidad",complex));
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
-                    System.out.println("\n Complejidad computacional: "+complex + " O(n + m): " + num_edges + "+" + num_nodes);
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^m): " + b + "^" + dmax);
                     graph.flush();
                 }
                 case "3" -> {
@@ -191,9 +208,19 @@ public class Main {
                     String nodo_origen6 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino6 = sc.next();
-                    //int b = graph.busquedaAnchura(nodo_origen6, nodo_destino6);
+                    //time start
+                    long start = System.nanoTime();
                     Double c = graph.busquedaCosteUniforme(nodo_origen6, nodo_destino6);
-                    System.out.println("\n Coste de busqueda: "+c);
+                    //time end
+                    long end = System.nanoTime();
+                    //time elapsed
+                    long timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Coste Uniforme",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda de costo uniforme
+                    double complex = (Math.pow(b,(c/epsilon)));
+                    comp_cost.add(new Pair<>("Busqueda Coste Uniforme",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(c/epsilon)): " + b + "^(" + c+"/" + epsilon+ ")");
                     graph.flush();
                 }
                 case "7" -> {
@@ -202,7 +229,19 @@ public class Main {
                     String nodo_origen7 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino7 = sc.next();
-                    graph.busquedaHillClimbing(nodo_origen7, nodo_destino7);
+                    //time start
+                    long start = System.nanoTime();
+                    int k =graph.busquedaHillClimbing(nodo_origen7, nodo_destino7);
+                    //time end
+                    long end = System.nanoTime();
+                    //time elapsed
+                    long timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Hill Climbing",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda hill climbing
+                    double complex = (num_nodes*k);
+                    comp_cost.add(new Pair<>("Busqueda Hill Climbing",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(n*k): " + num_nodes + "*" + k);
                     graph.flush();
                 }
                 case "8" -> {
@@ -211,7 +250,21 @@ public class Main {
                     String nodo_origen8 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino8 = sc.next();
+                    //time start
+                    long start = System.nanoTime();
                     graph.busquedaPrimeroElMejor(nodo_origen8, nodo_destino8);
+                    //time end
+                    long end = System.nanoTime();
+                    //time elapsed
+                    long timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Primero el mejor",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda primero el mejor
+                    int d = graph.getDepth(nodo_origen8,nodo_destino8);
+                    double complex = (Math.pow(b,d));
+                    comp_cost.add(new Pair<>("Busqueda Primero el mejor",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^h): " + b + "^" + d);
+
                     graph.flush();
                 }
                 case "9" -> {
@@ -220,7 +273,20 @@ public class Main {
                     String nodo_origen9 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino9 = sc.next();
+                    //time start
+                    long start = System.nanoTime();
                     graph.busquedaAStar(nodo_origen9, nodo_destino9);
+                    //time end
+                    long end = System.nanoTime();
+                    //time elapsed
+                    long timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda A*",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda A*
+                    int d = graph.getDepth(nodo_origen9,nodo_destino9);
+                    double complex = (Math.pow(b,d));
+                    comp_cost.add(new Pair<>("Busqueda A*",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
                     graph.flush();
                 }
                 case "10" -> {
@@ -229,7 +295,20 @@ public class Main {
                     String nodo_origen10 = sc.next();
                     System.out.println("Ingrese el nodo destino");
                     String nodo_destino10 = sc.next();
-                    graph.busquedaGreedy(nodo_origen10, nodo_destino10);
+                    //time start
+                    long start = System.nanoTime();
+                    int k = graph.busquedaGreedy(nodo_origen10, nodo_destino10);
+                    //time end
+                    long end = System.nanoTime();
+                    //time elapsed
+                    long timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Avara",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda Avara
+                    double m = Math.ceil(num_nodes/k);
+                    double complex = (Math.pow(b,m));
+                    comp_cost.add(new Pair<>("Busqueda Avara",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^m): " + b + "^" + m);
                     graph.flush();
                 }
                 case "." -> System.out.println("Salir");

@@ -589,8 +589,9 @@ public class Grafo {
      * @param nodo_final El nodo que se desea encontrar durante la búsqueda.
      */
 
-    public void busquedaHillClimbing(String nodo_inicial, String nodo_final) {
+    public int busquedaHillClimbing(String nodo_inicial, String nodo_final) {
         ArrayList<Nodo> extrae = new ArrayList<>();
+        int max = 0;
         //Cola
         ArrayList<Nodo> cola = new ArrayList<>();
         Nodo nodo_inicial_obj = findNode(nodo_inicial);
@@ -617,15 +618,18 @@ public class Grafo {
                 for (Nodo nodo : extrae) {
                     System.out.print("["+nodo.getName() + ":" + nodo.getPeso()+"]");
                 }
-                return;
+                return max;
             }
             ArrayList<Nodo> temp = new ArrayList<>();
             // Para cada vecino del nodo actual, se actualiza el costo acumulado y se añade a la cola.
+            int actual = 0;
             for (Edge arista : nodoActual.getWays()) {
                 Nodo vecino = arista.getDestination();
                 // Verificamos que el vecino no haya sido visitado y que no esté en la cola.
-
-
+                actual++;
+                if (actual > max){
+                    max = actual;
+                }
                 if (!extrae.contains(vecino) && !cola.contains(vecino)) {
                     temp.add(vecino);
                 }
@@ -640,6 +644,7 @@ public class Grafo {
         }
         // Si la cola se vacía sin encontrar el nodo final, no existe solución.
         System.out.println("No existe solución");
+        return max;
     }
 
     //Busqueda primero el mejor
@@ -745,18 +750,24 @@ public class Grafo {
                 //Buscamos si el nodo vecino ya esta en la cola
                 for (Pair<Nodo,Double> nodo : queue) {
                     if (nodo.getKey().getName().equals(vecino.getName())) {
+                        //System.out.println("Nodo vecino ya esta en la cola");
                         existe = true;
                         break;
                     }
                 }
+
                 //Verificar si el nodo vecino ya fue visitado o si ya esta en la lista de nodos a visitar
                 if (!nodo_vecino.getKey().isVisited() && !existe) {
                     costo_acumulado.put(vecino, costo_acumulado_vecino);
                     queue.add(nodo_vecino);
                 } else if (costo_acumulado_vecino < costo_acumulado.get(vecino)) { //Si el costo acumulado del vecino es menor al costo acumulado del nodo actual
                     costo_acumulado.put(vecino, costo_acumulado_vecino);
-                    queue.remove(nodo_vecino);
-                    queue.add(nodo_vecino);
+                    for (Pair<Nodo,Double> nodo : queue) {
+                        if (nodo.getKey().getName().equals(vecino.getName())) {
+                            nodo.setValue(costo_total_vecino);
+                            break;
+                        }
+                    }
                 }
             }
             //Ordenar la lista de hijos de acuerdo al coste heuristico
@@ -829,7 +840,7 @@ public class Grafo {
     * @param nodo_final Nodo final
     *
      */
-    public void busquedaGreedy(String nodo_inicial, String nodo_final) {
+    public int busquedaGreedy(String nodo_inicial, String nodo_final) {
         ArrayList<Nodo> queue = new ArrayList<>();
         ArrayList<Nodo> nodos_visitados = new ArrayList<>();
         Nodo nodo_inicial_obj = findNode(nodo_inicial);
@@ -837,6 +848,7 @@ public class Grafo {
         System.out.println("Cola: ");
         queue.add(nodo_inicial_obj);
         nodo_inicial_obj.setVisited(true);
+        int max = 0;
         while (!queue.isEmpty()) {
 
             //Imprimir la cola
@@ -853,10 +865,15 @@ public class Grafo {
                 break;
             }
             //Expandir el nodo
+            int aux = 0;
             for (Edge way : nodo_actual.getWays()) {
                 //Verificar si el nodo vecino ya fue visitado
                 if (!queue.contains(way.getDestination()) && !nodos_visitados.contains(way.getDestination())) {
                     queue.add(way.getDestination());
+                    aux++;
+                    if (aux > max) {
+                        max = aux;
+                    }
                 }
             }
             //Ordenar la lista de hijos de acuerdo al coste heuristico
@@ -866,6 +883,6 @@ public class Grafo {
         for (Nodo nodo : nodos_visitados) {
             System.out.print("|" + nodo.getName() + ":" + nodo.getPeso() + "|");
         }
-
+        return max;
     }
 }
