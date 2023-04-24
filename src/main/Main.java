@@ -7,6 +7,7 @@ import grafo.Pair;
 import search.Bus_Ciegas;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class Main {
@@ -260,10 +261,9 @@ public class Main {
                     search_times.add(new Pair<>("Busqueda Primero el mejor",timeElapsed*Math.pow(10,-9)));
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda primero el mejor
-                    int d = graph.getDepth(nodo_origen8,nodo_destino8);
-                    double complex = (Math.pow(b,d));
+                    double complex = (Math.pow(num_nodes,2)*Math.log(num_nodes));
                     comp_cost.add(new Pair<>("Busqueda Primero el mejor",complex));
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^h): " + b + "^" + d);
+                    System.out.println("\n Complejidad computacional: "+complex + " O(n^2 log n): " + "O("+num_nodes+"^2"+" log "+num_nodes);
 
                     graph.flush();
                 }
@@ -310,6 +310,190 @@ public class Main {
                     comp_cost.add(new Pair<>("Busqueda Avara",complex));
                     System.out.println("\n Complejidad computacional: "+complex + " O(b^m): " + b + "^" + m);
                     graph.flush();
+                }
+                // Summarize search times
+                case "11" -> {
+                    System.out.println("-------------------------------------------------");
+                    System.out.println("Resumen de tiempos de busqueda");
+                    System.out.println("-------------------------------------------------");
+                    //Sort search times
+                    search_times.sort(Comparator.comparing(Pair::getValue));
+                    for (Pair<String, Double> pair : search_times) {
+                        System.out.println(pair.getKey() + " : " + pair.getValue() + " segundos");
+                    }
+                    System.out.println("-------------------------------------------------");
+                }
+                // Execute all searches
+                case "12" -> {
+                    System.out.println("-------------------------------------------------");
+                    System.out.println("Ejecutando todas las busquedas");
+                    System.out.println("-------------------------------------------------");
+                    //Busqueda en amplitud
+                    System.out.println("-----------------------Busqueda por amplitud---------------------------------");
+                    System.out.println("Busqueda a ciegas anchura");
+                    System.out.println("Ingrese el nodo origen");
+                    String nodo_origen = sc.next();
+                    System.out.println("Ingrese el nodo destino");
+                    String nodo_destino = sc.next();
+                    //time start
+                    long start = System.nanoTime();
+                    graph.busquedaAnchura(nodo_origen, nodo_destino);
+                    //time end
+                    long end = System.nanoTime();
+                    //time elapsed
+                    long timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Anchura",timeElapsed*Math.pow(10,-9)));
+                    int d = graph.getDepth(nodo_origen,nodo_destino);
+                    //Complejidad computacional y tiempo de busqueda busqueda anchura
+                    double complex = (Math.pow(b,d));
+                    comp_cost.add(new Pair<>("Busqueda Anchura",complex));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
+                    graph.flush();
+                    System.out.println("-----------------------Busqueda por profundidad---------------------------------");
+                    //time start
+                     start = System.nanoTime();
+                    graph.busquedaProfundidad(nodo_origen, nodo_destino);
+                    //time end
+                    end = System.nanoTime();
+                    //time elapsed
+                    timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Profundidad",timeElapsed*Math.pow(10,-9)));
+                    //Complejidad computacional y tiempo de busqueda busqueda profundidad
+                    //Profundidad maxima del arbol
+
+                    complex = (Math.pow(b,dmax));
+                    comp_cost.add(new Pair<>("Busqueda Profundidad",complex));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^m): " + b + "^" + dmax);
+                    graph.flush();
+                    System.out.println("-----------------------Busqueda por profundidad iterativa---------------------------------");
+                    //time start
+                    start = System.nanoTime();
+                    d = graph.busquedaProfundidadIterativa(nodo_origen, nodo_destino);
+                    //time end
+                    end = System.nanoTime();
+                    //time elapsed
+                    timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Profundidad Iterativa",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda profundidad iterativa
+                    complex = (Math.pow(b,d));
+                    comp_cost.add(new Pair<>("Busqueda Profundidad Iterativa",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
+                    graph.flush();
+
+                    System.out.println("-----------------------Busqueda bidireccional por anchura---------------------------------");
+                    d = graph.getDepth(nodo_origen,nodo_destino);
+                    //time start
+                    start = System.nanoTime();
+                    graph.busquedaBidireccionalAnchura(nodo_origen, nodo_destino);
+                    //time end
+                    end = System.nanoTime();
+                    //time elapsed
+                    timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Bidireccional Anchura",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda bidireccional anchura
+                    complex = (Math.pow(b,(d/2.0)));
+                    comp_cost.add(new Pair<>("Busqueda Bidireccional Anchura",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
+                    graph.flush();
+                    System.out.println("-----------------------Busqueda bidireccional por profundidad---------------------------------");
+                    d = graph.getDepth(nodo_origen,nodo_destino);
+                    //time start
+                    start = System.nanoTime();
+                    graph.busquedaBidireccionalProfundidad(nodo_origen, nodo_destino);
+                    //time end
+                    end = System.nanoTime();
+                    //time elapsed
+                    timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Bidireccional Profundidad",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda bidireccional profundidad
+                    complex = (Math.pow(b,(d/2.0)));
+                    comp_cost.add(new Pair<>("Busqueda Bidireccional Profundidad",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
+                    graph.flush();
+                    System.out.println("-----------------------Busqueda costo uniforme---------------------------------");
+                    //time start
+                    start = System.nanoTime();
+                    Double c = graph.busquedaCosteUniforme(nodo_origen, nodo_destino);
+                    //time end
+                    end = System.nanoTime();
+                    //time elapsed
+                    timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Coste Uniforme",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda de costo uniforme
+                    complex = (Math.pow(b,(c/epsilon)));
+                    comp_cost.add(new Pair<>("Busqueda Coste Uniforme",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(c/epsilon)): " + b + "^(" + c+"/" + epsilon+ ")");
+                    graph.flush();
+                    System.out.println("-----------------------Busqueda Hill Climbing---------------------------------");
+                    //time start
+                    start = System.nanoTime();
+                    int k =graph.busquedaHillClimbing(nodo_origen, nodo_destino);
+                    //time end
+                    end = System.nanoTime();
+                    //time elapsed
+                    timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Hill Climbing",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda hill climbing
+                    complex = (num_nodes*k);
+                    comp_cost.add(new Pair<>("Busqueda Hill Climbing",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(n*k): " + num_nodes + "*" + k);
+                    graph.flush();
+                    System.out.println("-----------------------Busqueda Primero el mejor---------------------------------");
+                    //time start
+                    start = System.nanoTime();
+                    graph.busquedaPrimeroElMejor(nodo_origen, nodo_destino);
+                    //time end
+                    end = System.nanoTime();
+                    //time elapsed
+                    timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Primero el mejor",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda primero el mejor
+                    complex = (Math.pow(num_nodes,2)*Math.log(num_nodes));
+                    comp_cost.add(new Pair<>("Busqueda Primero el mejor",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(n^2 log n): " + "O("+num_nodes+"^2"+" log "+num_nodes);
+
+                    graph.flush();
+                    System.out.println("-----------------------Busqueda A*---------------------------------");
+                    //time start
+                    start = System.nanoTime();
+                    graph.busquedaAStar(nodo_origen, nodo_destino);
+                    //time end
+                    end = System.nanoTime();
+                    //time elapsed
+                    timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda A*",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda A*
+                    d = graph.getDepth(nodo_origen,nodo_destino);
+                    complex = (Math.pow(b,d));
+                    comp_cost.add(new Pair<>("Busqueda A*",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
+                    graph.flush();
+                    System.out.println("-----------------------Busqueda Avara---------------------------------");
+                    //time start
+                    start = System.nanoTime();
+                    k = graph.busquedaGreedy(nodo_origen, nodo_destino);
+                    //time end
+                    end = System.nanoTime();
+                    //time elapsed
+                    timeElapsed = end - start;
+                    search_times.add(new Pair<>("Busqueda Avara",timeElapsed*Math.pow(10,-9)));
+                    System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
+                    //Complejidad computacional busqueda Avara
+                    double m = Math.ceil(num_nodes/k);
+                    complex = (Math.pow(b,m));
+                    comp_cost.add(new Pair<>("Busqueda Avara",complex));
+                    System.out.println("\n Complejidad computacional: "+complex + " O(b^m): " + b + "^" + m);
+                    graph.flush();
+
                 }
                 case "." -> System.out.println("Salir");
             }
