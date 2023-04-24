@@ -638,9 +638,12 @@ public class Grafo {
             //Ordenamos la cola de acuerdo al peso
             temp.sort(Comparator.comparing(Nodo::getPeso));
             //Añadimos el vecino con menor peso a la cola
-            cola.add(0,temp.get(0));
-            temp.remove(0);
-            cola.addAll(temp);
+            if(temp.size() > 0){
+                cola.add(0,temp.get(0));
+                temp.remove(0);
+                cola.addAll(temp);
+            }
+
         }
         // Si la cola se vacía sin encontrar el nodo final, no existe solución.
         System.out.println("No existe solución");
