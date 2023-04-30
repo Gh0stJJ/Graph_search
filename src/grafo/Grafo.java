@@ -588,7 +588,52 @@ public class Grafo {
      * @param nodo_inicial El nodo desde donde se inicia la búsqueda.
      * @param nodo_final El nodo que se desea encontrar durante la búsqueda.
      */
+    public int busquedaAscensoColina(String nodo_inicial, String nodo_final) {
+        ArrayList<Nodo> extrae = new ArrayList<>();
+        int max = 0;
+        Nodo nodo_actual = findNode(nodo_inicial);
+        Nodo nodo_final_obj = findNode(nodo_final);
+        while (true) {
 
+            System.out.println("Nodo actual: " + nodo_actual.getName());
+            System.out.println();
+            extrae.add(nodo_actual);
+            // Si llegamos al nodo final, se termina la búsqueda.
+            if (nodo_actual.equals(nodo_final_obj)) {
+                // Hacer algo con la solución encontrada
+                System.out.println("Solucion encontrada");
+                for (Nodo nodo : extrae) {
+                    System.out.print("["+nodo.getName() + ":" + nodo.getPeso()+"]");
+                }
+                return max;
+            }
+            ArrayList<Nodo> temp = new ArrayList<>();
+            // Para cada vecino del nodo actual, se actualiza el costo acumulado y se añade a la cola.
+            int actual = 0;
+            for (Edge arista : nodo_actual.getWays()) {
+                Nodo vecino = arista.getDestination();
+                // Verificamos que el vecino no haya sido visitado y que no esté en la cola.
+                actual++;
+                if (actual > max){
+                    max = actual;
+                }
+                if (!extrae.contains(vecino)) {
+                    temp.add(vecino);
+                }
+
+            }
+            //Ordenamos la cola de acuerdo al peso
+            temp.sort(Comparator.comparing(Nodo::getPeso));
+            //Añadimos el vecino con menor peso a la cola
+            if(temp.size() > 0){
+                nodo_actual = temp.get(0);
+            }else {
+                System.out.println("No existe solución");
+                return max;
+            }
+
+        }
+    }
     public int busquedaHillClimbing(String nodo_inicial, String nodo_final) {
         ArrayList<Nodo> extrae = new ArrayList<>();
         int max = 0;

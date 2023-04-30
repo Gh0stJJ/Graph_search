@@ -17,7 +17,7 @@ public class Main {
         Data dt = new Data();
         Grafo graph = new Grafo();
         ArrayList<Pair<String,Double>> search_times = new ArrayList<>();
-        ArrayList<Pair<String,Double>> comp_cost = new ArrayList<>();
+        ArrayList<Pair<Pair<String,Double>,Pair<String,Double>>> comp_cost = new ArrayList<>();
 
         //jfilechooser
         ArrayList<ArrayList<String>> data = dt.getData("src/data/Grafos/HGrafo2.csv");
@@ -87,6 +87,7 @@ public class Main {
             System.out.println("10. Busqueda Avara");
             System.out.println("11. Resumen de busquedas");
             System.out.println("12. Ejecutar todas las busquedas");
+            System.out.println("13. Complejidad de las busquedas");
             System.out.println("_. Salir");
             Scanner sc = new Scanner(System.in);
             sel= sc.nextLine();
@@ -110,9 +111,9 @@ public class Main {
                     int d = graph.getDepth(nodo_origen,nodo_destino);
                     //Complejidad computacional y tiempo de busqueda busqueda anchura
                     double complex = (Math.pow(b,d));
-                    comp_cost.add(new Pair<>("Busqueda Anchura",complex));
+                    comp_cost.add(new Pair<> (new Pair<>("Busqueda Anchura Complejidad temporal",complex), new Pair<>(" Complejidad espacial",complex)));
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
+                    System.out.println("\n Complejidad temporal y espacial: "+complex + " O(b^d): " + b + "^" + d);
                     graph.flush();
                 }
                 case "2" -> {
@@ -133,9 +134,9 @@ public class Main {
                     //Profundidad maxima del arbol
 
                     double complex = (Math.pow(b,dmax));
-                    comp_cost.add(new Pair<>("Busqueda Profundidad",complex));
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Profundidad Complejidad temporal ",complex), new Pair<>(" Complejidad espacial ", b*dmax)));
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^m): " + b + "^" + dmax);
+                    System.out.println("\n Complejidad temporal: "+complex + " O(b^m): " + b + "^" + dmax + " Complejidad espacial: O(b*m):" + b*dmax);
                     graph.flush();
                 }
                 case "3" -> {
@@ -155,8 +156,8 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda profundidad iterativa
                     double complex = (Math.pow(b,d));
-                    comp_cost.add(new Pair<>("Busqueda Profundidad Iterativa",complex));
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Profundidad Iterativa Complejidad temporal O(b^d)",complex), new Pair<>(" Complejidad espacial O(b^d)", complex)));
+                    System.out.println("\n Complejidad temporal y espacial: "+complex + " O(b^d): " + b + "^" + d);
                     graph.flush();
                 }
                 case "4" -> {
@@ -177,8 +178,8 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda bidireccional anchura
                     double complex = (Math.pow(b,(d/2.0)));
-                    comp_cost.add(new Pair<>("Busqueda Bidireccional Anchura",complex));
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Bidireccional Anchura Complejidad temporal: O(b^(d/2))",complex), new Pair<>(" Complejidad espacial",complex)));
+                    System.out.println("\n Complejidad temporal y espacial : "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
                     graph.flush();
                 }
                 case "5" -> {
@@ -199,8 +200,8 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda bidireccional profundidad
                     double complex = (Math.pow(b,(d/2.0)));
-                    comp_cost.add(new Pair<>("Busqueda Bidireccional Profundidad",complex));
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Bidireccional Profundidad Complejidad temporal: O(b^(d/2))",complex), new Pair<>(" Complejidad espacial",complex)));
+                    System.out.println("\n Complejidad temporal y espacial : "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
                     graph.flush();
                 }
                 case "6" -> {
@@ -220,8 +221,8 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda de costo uniforme
                     double complex = (Math.pow(b,(c/epsilon)));
-                    comp_cost.add(new Pair<>("Busqueda Coste Uniforme",complex));
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(c/epsilon)): " + b + "^(" + c+"/" + epsilon+ ")");
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Coste Uniforme Complejidad temporal O(b^(c/epsilon)) ",complex), new Pair<>(" Complejidad espacial O(b^(c/epsilon))",complex)));
+                    System.out.println("\n Complejidad temporal y espacial : "+complex + " O(b^(c/epsilon)): " + b + "^(" + c+"/" + epsilon+ ")");
                     graph.flush();
                 }
                 case "7" -> {
@@ -232,7 +233,7 @@ public class Main {
                     String nodo_destino7 = sc.next();
                     //time start
                     long start = System.nanoTime();
-                    int k =graph.busquedaHillClimbing(nodo_origen7, nodo_destino7);
+                    int k =graph.busquedaAscensoColina(nodo_origen7, nodo_destino7);
                     //time end
                     long end = System.nanoTime();
                     //time elapsed
@@ -241,7 +242,7 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda hill climbing
                     double complex = (num_nodes*k);
-                    comp_cost.add(new Pair<>("Busqueda Hill Climbing",complex));
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Hill Climbing Complejidad temporal O(n*k): ",complex), new Pair<>(" Complejidad espacial O(n*k): ",complex)));
                     System.out.println("\n Complejidad computacional: "+complex + " O(n*k): " + num_nodes + "*" + k);
                     graph.flush();
                 }
@@ -262,7 +263,7 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda primero el mejor
                     double complex = (Math.pow(num_nodes,2)*Math.log(num_nodes));
-                    comp_cost.add(new Pair<>("Busqueda Primero el mejor",complex));
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Primero el mejor complejidad temporal O(n^2 log n)",complex), new Pair<>(" Complejidad espacial O(n^2 log n) ",complex)));
                     System.out.println("\n Complejidad computacional: "+complex + " O(n^2 log n): " + "O("+num_nodes+"^2"+" log "+num_nodes);
 
                     graph.flush();
@@ -285,8 +286,8 @@ public class Main {
                     //Complejidad computacional busqueda A*
                     int d = graph.getDepth(nodo_origen9,nodo_destino9);
                     double complex = (Math.pow(b,d));
-                    comp_cost.add(new Pair<>("Busqueda A*",complex));
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda A* Complejidad temporal O(b^d) ",complex), new Pair<>(" Complejidad espacial O(b^d) ",complex)));
+                    System.out.println("\n Complejidad temporal y espacial: "+complex + " O(b^d): " + b + "^" + d);
                     graph.flush();
                 }
                 case "10" -> {
@@ -307,7 +308,7 @@ public class Main {
                     //Complejidad computacional busqueda Avara
                     double m = Math.ceil(num_nodes/k);
                     double complex = (Math.pow(b,m));
-                    comp_cost.add(new Pair<>("Busqueda Avara",complex));
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Avara Complejidad temporal ",complex), new Pair<>(" Complejidad espacial O(b^m) ",complex)));
                     System.out.println("\n Complejidad computacional: "+complex + " O(b^m): " + b + "^" + m);
                     graph.flush();
                 }
@@ -346,9 +347,9 @@ public class Main {
                     int d = graph.getDepth(nodo_origen,nodo_destino);
                     //Complejidad computacional y tiempo de busqueda busqueda anchura
                     double complex = (Math.pow(b,d));
-                    comp_cost.add(new Pair<>("Busqueda Anchura",complex));
+                    comp_cost.add(new Pair<> (new Pair<>("Busqueda Anchura Complejidad temporal",complex), new Pair<>(" Complejidad espacial",complex)));
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
+                    System.out.println("\n Complejidad temporal y espacial: "+complex + " O(b^d): " + b + "^" + d);
                     graph.flush();
                     System.out.println("-----------------------Busqueda por profundidad---------------------------------");
                     //time start
@@ -363,9 +364,9 @@ public class Main {
                     //Profundidad maxima del arbol
 
                     complex = (Math.pow(b,dmax));
-                    comp_cost.add(new Pair<>("Busqueda Profundidad",complex));
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Profundidad Complejidad temporal ",complex), new Pair<>(" Complejidad espacial ", b*dmax)));
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^m): " + b + "^" + dmax);
+                    System.out.println("\n Complejidad temporal: "+complex + " O(b^m): " + b + "^" + dmax + " Complejidad espacial: O(b*m):" + b*dmax);
                     graph.flush();
                     System.out.println("-----------------------Busqueda por profundidad iterativa---------------------------------");
                     //time start
@@ -379,8 +380,8 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda profundidad iterativa
                     complex = (Math.pow(b,d));
-                    comp_cost.add(new Pair<>("Busqueda Profundidad Iterativa",complex));
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Profundidad Iterativa Complejidad temporal O(b^d)",complex), new Pair<>(" Complejidad espacial O(b^d)", complex)));
+                    System.out.println("\n Complejidad temporal y espacial: "+complex + " O(b^d): " + b + "^" + d);
                     graph.flush();
 
                     System.out.println("-----------------------Busqueda bidireccional por anchura---------------------------------");
@@ -396,8 +397,8 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda bidireccional anchura
                     complex = (Math.pow(b,(d/2.0)));
-                    comp_cost.add(new Pair<>("Busqueda Bidireccional Anchura",complex));
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Bidireccional Anchura Complejidad temporal: O(b^(d/2))",complex), new Pair<>(" Complejidad espacial",complex)));
+                    System.out.println("\n Complejidad temporal y espacial : "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
                     graph.flush();
                     System.out.println("-----------------------Busqueda bidireccional por profundidad---------------------------------");
                     d = graph.getDepth(nodo_origen,nodo_destino);
@@ -412,8 +413,8 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda bidireccional profundidad
                     complex = (Math.pow(b,(d/2.0)));
-                    comp_cost.add(new Pair<>("Busqueda Bidireccional Profundidad",complex));
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Bidireccional Profundidad Complejidad temporal: O(b^(d/2))",complex), new Pair<>(" Complejidad espacial",complex)));
+                    System.out.println("\n Complejidad temporal y espacial : "+complex + " O(b^(d/2)): " + b + "^" + d+"/2");
                     graph.flush();
                     System.out.println("-----------------------Busqueda costo uniforme---------------------------------");
                     //time start
@@ -427,13 +428,13 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda de costo uniforme
                     complex = (Math.pow(b,(c/epsilon)));
-                    comp_cost.add(new Pair<>("Busqueda Coste Uniforme",complex));
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^(c/epsilon)): " + b + "^(" + c+"/" + epsilon+ ")");
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Coste Uniforme Complejidad temporal O(b^(c/epsilon)) ",complex), new Pair<>(" Complejidad espacial O(b^(c/epsilon))",complex)));
+                    System.out.println("\n Complejidad temporal y espacial : "+complex + " O(b^(c/epsilon)): " + b + "^(" + c+"/" + epsilon+ ")");
                     graph.flush();
                     System.out.println("-----------------------Busqueda Hill Climbing---------------------------------");
                     //time start
                     start = System.nanoTime();
-                    int k =graph.busquedaHillClimbing(nodo_origen, nodo_destino);
+                    int k =graph.busquedaAscensoColina(nodo_origen, nodo_destino);
                     //time end
                     end = System.nanoTime();
                     //time elapsed
@@ -442,7 +443,7 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda hill climbing
                     complex = (num_nodes*k);
-                    comp_cost.add(new Pair<>("Busqueda Hill Climbing",complex));
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Hill Climbing Complejidad temporal O(n*k): ",complex), new Pair<>(" Complejidad espacial O(n*k): ",complex)));
                     System.out.println("\n Complejidad computacional: "+complex + " O(n*k): " + num_nodes + "*" + k);
                     graph.flush();
                     System.out.println("-----------------------Busqueda Primero el mejor---------------------------------");
@@ -457,7 +458,7 @@ public class Main {
                     System.out.println("\n Tiempo de busqueda: "+timeElapsed*Math.pow(10,-9) + " segundos");
                     //Complejidad computacional busqueda primero el mejor
                     complex = (Math.pow(num_nodes,2)*Math.log(num_nodes));
-                    comp_cost.add(new Pair<>("Busqueda Primero el mejor",complex));
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Primero el mejor complejidad temporal O(n^2 log n)",complex), new Pair<>(" Complejidad espacial O(n^2 log n) ",complex)));
                     System.out.println("\n Complejidad computacional: "+complex + " O(n^2 log n): " + "O("+num_nodes+"^2"+" log "+num_nodes);
 
                     graph.flush();
@@ -474,8 +475,8 @@ public class Main {
                     //Complejidad computacional busqueda A*
                     d = graph.getDepth(nodo_origen,nodo_destino);
                     complex = (Math.pow(b,d));
-                    comp_cost.add(new Pair<>("Busqueda A*",complex));
-                    System.out.println("\n Complejidad computacional: "+complex + " O(b^d): " + b + "^" + d);
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda A* Complejidad temporal O(b^d) ",complex), new Pair<>(" Complejidad espacial O(b^d) ",complex)));
+                    System.out.println("\n Complejidad temporal y espacial: "+complex + " O(b^d): " + b + "^" + d);
                     graph.flush();
                     System.out.println("-----------------------Busqueda Avara---------------------------------");
                     //time start
@@ -490,11 +491,20 @@ public class Main {
                     //Complejidad computacional busqueda Avara
                     double m = Math.ceil(num_nodes/k);
                     complex = (Math.pow(b,m));
-                    comp_cost.add(new Pair<>("Busqueda Avara",complex));
+                    comp_cost.add(new Pair<>(new Pair<>("Busqueda Avara Complejidad temporal ",complex), new Pair<>(" Complejidad espacial O(b^m) ",complex)));
                     System.out.println("\n Complejidad computacional: "+complex + " O(b^m): " + b + "^" + m);
                     graph.flush();
 
                 }
+                case "13" -> {
+                    //Mostramos toda la complejidad computacional de cada busqueda
+                    //Print comp_cost list
+                    System.out.println("Complejidad computacional de cada busqueda: ");
+                    for( Pair<Pair<String,Double>,Pair<String, Double>> pair : comp_cost){
+                        System.out.println(pair.getKey().getKey() + pair.getKey().getValue() + pair.getValue().getKey() + pair.getValue().getValue());
+                    }
+                }
+
                 case "." -> System.out.println("Salir");
             }
 
