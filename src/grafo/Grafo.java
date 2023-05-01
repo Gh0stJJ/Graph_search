@@ -148,7 +148,7 @@ public class Grafo {
             for (Nodo nodo : nodos_a_visitar) {
                 System.out.print("|"+nodo.getName() + "|");
             }
-            System.out.println();
+            System.out.println("--->"+nodos_a_visitar.get(0).getName());
             Nodo nodo_actual = nodos_a_visitar.get(0);
             nodos_a_visitar.remove(0);
             if (!nodo_actual.isVisited()){
@@ -203,7 +203,7 @@ public class Grafo {
             for (Nodo nodo : queue) {
                 System.out.print("|"+nodo.getName() + "|");
             }
-            System.out.println();
+            System.out.println("--->"+queue.get(0).getName());
             queue.remove(0);
             if (!nodo_actual.isVisited()){
                 nodos_visitados.add(nodo_actual);
@@ -340,7 +340,9 @@ public class Grafo {
         Nodo nodo_final_obj = findNode(nodo_final);
         cola.add(nodo_inicial_obj);
         cola2.add(nodo_final_obj);
+        boolean encontrado = false;
         while (!cola.isEmpty() && !cola2.isEmpty()){
+
             //Pasar un clon de la cola a la lista de colas
             total_colaA.add((ArrayList<Nodo>) cola.clone());
             //Primera cola
@@ -361,29 +363,6 @@ public class Grafo {
             }
             Collections.sort(hijos_ord);
             cola.addAll(hijos_ord);
-
-
-            //Segunda cola
-            total_colaB.add((ArrayList<Nodo>) cola2.clone());
-            Nodo nodo_actual2 = cola2.get(0);
-            cola2.remove(0);
-
-            extrae_final.add(nodo_actual2);
-
-            if (nodo_actual2.getName().equals(nodo_inicial_obj.getName())){
-                break;
-            }
-            ArrayList<Nodo> hijos_ord2 = new ArrayList<>();
-            for (Edge way : nodo_actual2.getWays()) {
-                //Verificar si ya fueron añadidos a la cola
-                if (!cola2.contains(way.getDestination()) && !extrae_final.contains(way.getDestination())){
-                    hijos_ord2.add(way.getDestination());
-                }
-            }
-            Collections.sort(hijos_ord2);
-            cola2.addAll(hijos_ord2);
-            //Pasar un clon de la cola a la lista de colas
-
 
             //Verificar si hay un nodo en comun
             for (Nodo nodo : cola) {
@@ -411,9 +390,38 @@ public class Grafo {
                     //Vaciar las colas
                     cola.clear();
                     cola2.clear();
+                    encontrado = true;
                     break;
+
+                    //Exit from while
+
                 }
             }
+
+            //Segunda cola
+            if (encontrado){
+                break;
+            }
+            total_colaB.add((ArrayList<Nodo>) cola2.clone());
+            Nodo nodo_actual2 = cola2.get(0);
+            cola2.remove(0);
+
+            extrae_final.add(nodo_actual2);
+
+            if (nodo_actual2.getName().equals(nodo_inicial_obj.getName())){
+                break;
+            }
+            ArrayList<Nodo> hijos_ord2 = new ArrayList<>();
+            for (Edge way : nodo_actual2.getWays()) {
+                //Verificar si ya fueron añadidos a la cola
+                if (!cola2.contains(way.getDestination()) && !extrae_final.contains(way.getDestination())){
+                    hijos_ord2.add(way.getDestination());
+                }
+            }
+            Collections.sort(hijos_ord2);
+            cola2.addAll(hijos_ord2);
+            //Pasar un clon de la cola a la lista de colas
+
 
         }
 
@@ -436,6 +444,7 @@ public class Grafo {
         ArrayList<Nodo> cola2 = new ArrayList<>();
         Nodo nodo_inicial_obj = findNode(nodo_inicial);
         Nodo nodo_final_obj = findNode(nodo_final);
+        boolean encontrado = false;
         cola.add(nodo_inicial_obj);
         cola2.add(nodo_final_obj);
         while (!cola.isEmpty() && !cola2.isEmpty()){
@@ -460,29 +469,6 @@ public class Grafo {
             Collections.sort(hijos_ord);
             cola.addAll(0,hijos_ord);
 
-
-            //Segunda cola
-            total_colaB.add((ArrayList<Nodo>) cola2.clone());
-            Nodo nodo_actual2 = cola2.get(0);
-            cola2.remove(0);
-
-            extrae_final.add(nodo_actual2);
-
-            if (nodo_actual2.getName().equals(nodo_inicial_obj.getName())){
-                break;
-            }
-            ArrayList<Nodo> hijos_ord2 = new ArrayList<>();
-            for (Edge way : nodo_actual2.getWays()) {
-                //Verificar si ya fueron añadidos a la cola
-                if (!cola2.contains(way.getDestination()) && !extrae_final.contains(way.getDestination())){
-                    hijos_ord2.add(way.getDestination());
-                }
-            }
-            Collections.sort(hijos_ord2);
-            cola2.addAll(0,hijos_ord2);
-            //Pasar un clon de la cola a la lista de colas
-
-
             //Verificar si hay un nodo en comun
             for (Nodo nodo : cola) {
                 if (cola2.contains(nodo)){
@@ -509,9 +495,34 @@ public class Grafo {
                     //Vaciar las colas
                     cola.clear();
                     cola2.clear();
+                    encontrado = true;
                     break;
                 }
             }
+            if (encontrado){
+                break;
+            }
+
+            //Segunda cola
+            total_colaB.add((ArrayList<Nodo>) cola2.clone());
+            Nodo nodo_actual2 = cola2.get(0);
+            cola2.remove(0);
+
+            extrae_final.add(nodo_actual2);
+
+            if (nodo_actual2.getName().equals(nodo_inicial_obj.getName())){
+                break;
+            }
+            ArrayList<Nodo> hijos_ord2 = new ArrayList<>();
+            for (Edge way : nodo_actual2.getWays()) {
+                //Verificar si ya fueron añadidos a la cola
+                if (!cola2.contains(way.getDestination()) && !extrae_final.contains(way.getDestination())){
+                    hijos_ord2.add(way.getDestination());
+                }
+            }
+            Collections.sort(hijos_ord2);
+            cola2.addAll(0,hijos_ord2);
+            //Pasar un clon de la cola a la lista de colas
 
         }
 
@@ -541,7 +552,7 @@ public class Grafo {
             for (Pair<Nodo, Double> nodo : cola) {
                 System.out.print("["+nodo.getKey().getName() + " : " + nodo.getValue()+"]");
             }
-            System.out.println();
+            System.out.println("-->"+cola.get(0).getKey().getName());
             // Se extrae el nodo con menor costo acumulado de la cola.
             //Pair<Nodo, Double> nodoActual = cola.stream().min(Comparator.comparing(Pair::getValue)).get();
             Pair<Nodo, Double> nodoActual = cola.get(0);
@@ -591,15 +602,28 @@ public class Grafo {
     public int busquedaAscensoColina(String nodo_inicial, String nodo_final) {
         ArrayList<Nodo> extrae = new ArrayList<>();
         int max = 0;
-        Nodo nodo_actual = findNode(nodo_inicial);
+        //Cola
+        ArrayList<Nodo> cola = new ArrayList<>();
+        Nodo nodo_inicial_obj = findNode(nodo_inicial);
         Nodo nodo_final_obj = findNode(nodo_final);
-        while (true) {
+        cola.add(nodo_inicial_obj);
+        while (!cola.isEmpty()) {
+            //Ordenamos la cola de acuerdo al peso
+            //cola.sort(Comparator.comparing(Pair::getValue));
+            //Imprimir la cola
+            for (Nodo nodo : cola) {
+                System.out.print("["+nodo.getName() + ":" + nodo.getPeso()+"]");
+            }
+            Nodo nodoActual = cola.get(0);
+            System.out.println("---> "+ nodoActual.getName());
+            // Se extrae el nodo con menor costo acumulado de la cola.
+            //Pair<Nodo, Double> nodoActual = cola.stream().min(Comparator.comparing(Pair::getValue)).get();
 
-            System.out.println("Nodo actual: " + nodo_actual.getName());
-            System.out.println();
-            extrae.add(nodo_actual);
+            cola.remove(nodoActual);
+            extrae.add(nodoActual);
+
             // Si llegamos al nodo final, se termina la búsqueda.
-            if (nodo_actual.equals(nodo_final_obj)) {
+            if (nodoActual.equals(nodo_final_obj)) {
                 // Hacer algo con la solución encontrada
                 System.out.println("Solucion encontrada");
                 for (Nodo nodo : extrae) {
@@ -610,7 +634,8 @@ public class Grafo {
             ArrayList<Nodo> temp = new ArrayList<>();
             // Para cada vecino del nodo actual, se actualiza el costo acumulado y se añade a la cola.
             int actual = 0;
-            for (Edge arista : nodo_actual.getWays()) {
+            cola.clear();
+            for (Edge arista : nodoActual.getWays()) {
                 Nodo vecino = arista.getDestination();
                 // Verificamos que el vecino no haya sido visitado y que no esté en la cola.
                 actual++;
@@ -626,13 +651,15 @@ public class Grafo {
             temp.sort(Comparator.comparing(Nodo::getPeso));
             //Añadimos el vecino con menor peso a la cola
             if(temp.size() > 0){
-                nodo_actual = temp.get(0);
-            }else {
-                System.out.println("No existe solución");
-                return max;
+                cola.addAll(temp);
             }
 
         }
+        // Si la cola se vacía sin encontrar el nodo final, no existe solución.
+        System.out.println("No existe solución");
+        return max;
+
+
     }
     public int busquedaHillClimbing(String nodo_inicial, String nodo_final) {
         ArrayList<Nodo> extrae = new ArrayList<>();
@@ -715,7 +742,7 @@ public class Grafo {
             for (Nodo nodo : queue) {
                 System.out.print("|"+nodo.getName() + ":"+nodo.getPeso()+"|");
             }
-            System.out.println();
+            System.out.println("-->"+nodo_actual.getName());
             queue.remove(0);
             if (!nodo_actual.isVisited()){
                 nodos_visitados.add(nodo_actual);
@@ -731,7 +758,7 @@ public class Grafo {
                     }
                 }
                 //Ordenar la lista de hijos de acuerdo al peso
-                temp.sort(Comparator.comparing(Nodo::getPeso));
+                temp.sort(new HeuristicComparator());
 
                 queue.addAll(0,temp);
             }
@@ -769,7 +796,7 @@ public class Grafo {
             for (Pair<Nodo,Double> nodo : queue) {
                 System.out.print("|" + nodo.getKey() + ":" + nodo.getValue() + "|");
             }
-            System.out.println();
+            System.out.println("-->" + nodo_actual.getKey().getName());
             queue.remove(0);
             nodos_visitados.add(nodo_actual);
             nodo_actual.getKey().setVisited(true);
@@ -819,7 +846,8 @@ public class Grafo {
                 }
             }
             //Ordenar la lista de hijos de acuerdo al coste heuristico
-            queue.sort(Comparator.comparing(Pair::getValue));
+            queue.sort(new PairComparator());
+            //queue.sort(Comparator.comparing(Pair::getValue));
 
 
         }
@@ -903,7 +931,7 @@ public class Grafo {
             for (Nodo nodo : queue) {
                 System.out.print("|" + nodo.getName() + ":" + nodo.getPeso() + "|");
             }
-            System.out.println();
+            System.out.println("-->"+queue.get(0).getName());
             Nodo nodo_actual = queue.get(0);
             queue.remove(0);
             nodos_visitados.add(nodo_actual);
@@ -925,7 +953,7 @@ public class Grafo {
                 }
             }
             //Ordenar la lista de hijos de acuerdo al coste heuristico
-            queue.sort(Comparator.comparing(Nodo::getPeso));
+            queue.sort(new HeuristicComparator());
         }
         System.out.println("Nodos visitados: ");
         for (Nodo nodo : nodos_visitados) {

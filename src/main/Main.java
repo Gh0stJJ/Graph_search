@@ -20,10 +20,10 @@ public class Main {
         ArrayList<Pair<Pair<String,Double>,Pair<String,Double>>> comp_cost = new ArrayList<>();
 
         //jfilechooser
-        ArrayList<ArrayList<String>> data = dt.getData("src/data/Grafos/HGrafo2.csv");
+        ArrayList<ArrayList<String>> data = dt.getData("src/data/Grafos/GraphSP.csv");
         //List of weights
         Data dtw = new Data();
-        ArrayList<ArrayList<String>> weights = dtw.getData("src/data/Grafos/HGrafo2_Pesos.csv");
+        ArrayList<ArrayList<String>> weights = dtw.getData("src/data/Grafos/GraphSP_Pesos.csv");
         //Remove header
 
         //Add nodes
